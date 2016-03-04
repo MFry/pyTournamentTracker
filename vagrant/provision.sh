@@ -6,8 +6,7 @@ apt-get -qq install libpq-dev libreadline-dev libsqlite3-dev libssl-dev
 # python3-dev
 # apt-get -qq install build-essential checkinstall
 cd /usr/src
-wget https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz
-sudo tar xzf Python-3.5.1.tgz
+wget https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz | tar xz
 cd python-5.5.1
 sudo ./configure
 sudo make altinstall
