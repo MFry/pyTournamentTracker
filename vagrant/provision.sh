@@ -4,14 +4,14 @@ apt-get -qq install postgresql
 apt-get -qq install python-virtualenv
 apt-get -qq install libpq-dev libreadline-dev libsqlite3-dev libssl-dev
 # python3-dev
-# apt-get -qq install build-essential checkinstall
-cd /usr/src
-wget https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz | tar xz
-cd python-5.5.1
-sudo ./configure
-sudo make altinstall
-# vsudo -u vagrant virtualenv -p /usr/bin/python3 py3env
-# source py3env/bin/activate
+apt-get -qq install build-essential checkinstall
+sudo -u vagrant virtualenv -p /usr/bin/python3 py3env
+source py3env/bin/activate
+cd /tmp
+wget -O- https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz | tar xz
+cd Python-3.5.1
+./configure
+make altinstall
 # cd /vagrant/tournament
 # sudo -u vagrant pip install -r requirements.txt
 
