@@ -11,6 +11,7 @@ cd /tmp
 wget -O- https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz | tar xz
 cd Python-3.5.1
 ./configure
+make
 make altinstall
 # cd /vagrant/tournament
 # sudo -u vagrant pip install -r requirements.txt
