@@ -29,9 +29,11 @@ su postgres -c 'createuser -dRS vagrant'
 # cd /vagrant/tournament
 # sudo -u vagrant pip install -r requirements.txt
 
-vagrantTip="[35m[1mThe shared directory is located at /vagrant\nTo access your shared files: cd /vagrant(B[m"
+vagrantTip="[35m[1mThe shared directory is located at /vagrant\nTo access your shared files: cd /vagrant(B[m"
 echo -e $vagrantTip > /etc/motd
 
 #Ref: https://gist.github.com/dwayne/87f807f0d313b444bb37
 #Ref: http://tecadmin.net/install-python-3-4-on-ubuntu-and-linuxmint/#
 #Ref: http://stackoverflow.com/questions/28253681/you-need-to-install-postgresql-server-dev-x-y-for-building-a-server-side-extensi
+#Ref: https://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+#Ref: http://www.simononsoftware.com/virtualenv-tutorial-part-2/
