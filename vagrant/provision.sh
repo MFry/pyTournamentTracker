@@ -16,9 +16,13 @@ make altinstall
 sudo -H pip3.5 install --upgrade pip
 sudo -H pip3.5 install virtualenvwrapper
 virtualenv --no-site-packages /vagrant/tournament/virtualenv/
-source /vagrant/tournament/virtualenv/bin/activate
-cd /vagrant/tournament/
-sudo -H pip install -r requirements.txt
+
+su postgres -c 'createuser -dRS vagrant'
+
+
+#source /vagrant/tournament/virtualenv/bin/activate
+#cd /vagrant/tournament/
+#sudo -H pip install -r requirements.txt
 #sudo -u vagrant virtualenv -p /usr/bin/python3 py3env
 #source py3env/bin/activate
 
