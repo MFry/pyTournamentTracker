@@ -16,9 +16,10 @@ make altinstall
 sudo -H pip3.5 install --upgrade pip
 sudo -H pip3.5 install virtualenvwrapper
 virtualenv --no-site-packages /vagrant/tournament/virtualenv/
-
 su postgres -c 'createuser -dRS vagrant'
-
+su vagrant -c 'createdb'
+su vagrant -c 'createdb tournament'
+su vagrant -c 'psql tournament -f /vagrant/tournament/tournament.sql'
 
 #source /vagrant/tournament/virtualenv/bin/activate
 #cd /vagrant/tournament/

@@ -9,5 +9,5 @@ Python module that uses the PostgreSQL database to keep track of players and mat
 ``` bash
 source /vagrant/tournament/virtualenv/bin/activate
 cd /vagrant/tournament/
-sudo pip install -r requirements.txt
+sudo -H pip install -r requirements.txt
 ```
