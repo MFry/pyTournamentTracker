@@ -14,3 +14,6 @@ make -s altinstall
 sudo -H pip3.5 install --upgrade pip
 sudo -H pip3.5 install virtualenvwrapper
 virtualenv --no-site-packages /vagrant/tournament/virtualenv/
+
+echo 'Clean up...'
+cd && rm -rf /tmp/Python-3.5.1

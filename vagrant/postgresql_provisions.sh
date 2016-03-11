@@ -11,7 +11,7 @@ sudo apt-get -y install postgresql-9.5 postgresql-client-9.5 postgresql-contrib-
 
 # Create the user to access the db. (vagrant sample)
 sudo -u postgres psql -c "CREATE USER vagrant WITH SUPERUSER CREATEDB ENCRYPTED PASSWORD 'vagrant'"
-su postgres -c 'createuser -dRS vagrant'
+#su postgres -c 'createuser -dRS vagrant'
 su vagrant -c 'createdb'
 su vagrant -c 'createdb tournament'
 su vagrant -c 'psql tournament -f /vagrant/tournament/tournament.sql'
@@ -27,6 +27,7 @@ sudo echo "logging_collector = on" >> /etc/postgresql/9.5/main/postgresql.conf
 # Edit to allow socket access, not just local unix access
 echo "Patching pg_hba to change -> socket access"
 sudo echo "host all all all md5" >> /etc/postgresql/9.5/main/pg_hba.conf
+sudo echo "host all all 0.0.0.0/0 trust" >> /etc/postgresql/9.5/main/pg_hba.conf
 
 echo "Patching complete, restarting"
 sudo service postgresql restart
