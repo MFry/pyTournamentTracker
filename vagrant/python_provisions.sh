@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # echo
+sudo apt-get install libpq-dev python-dev
 apt-get -qq install python-virtualenv
 apt-get -qq install libpq-dev libreadline-dev libsqlite3-dev libssl-dev
 # python3-dev
