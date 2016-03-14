@@ -4,10 +4,15 @@
 #
 
 import psycopg2
+import bleach
 
 
 def connect():
-    """Connect to the PostgreSQL database.  Returns a database connection."""
+    """
+
+    :rtype: psycopg2.connection
+    :return:
+    """
     return psycopg2.connect("dbname=tournament")
 
 
@@ -20,6 +25,9 @@ def deletePlayers():
 
 
 def countPlayers():
+    conn = connect()
+    cur = conn.cursor()
+    cur.Execute()
     """Returns the number of players currently registered."""
 
 
@@ -32,6 +40,11 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO players VALUES (%s);', (bleach.clean(name),))
+    conn.commit()
+    conn.close()
 
 
 def playerStandings():
