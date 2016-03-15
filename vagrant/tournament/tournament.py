@@ -25,10 +25,15 @@ def deletePlayers():
 
 
 def countPlayers():
+    """
+        Returns the number of players currently registered.
+    :return:
+    """
     conn = connect()
     cur = conn.cursor()
-    cur.Execute()
-    """Returns the number of players currently registered."""
+    cur.Execute('SELECT * FROM tournament_players;')
+    players_count = cur.fetchall()
+    return players_count # TODO: Find what should be returned.
 
 
 def registerPlayer(name):

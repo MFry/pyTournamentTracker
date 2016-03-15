@@ -33,4 +33,3 @@ CREATE VIEW tournament_size as
   SELECT tournament_id, count(*) as total_players
   FROM tournament_players
   GROUP BY tournament_id;
-
