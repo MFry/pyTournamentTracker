@@ -7,20 +7,30 @@
 -- these lines here.
 
 CREATE TABLE players (
-  id SERIAL PRIMARY KEY,
-  name TEXT);
+  id   SERIAL PRIMARY KEY NOT NULL,
+  name TEXT               NOT NULL);
 
 -- VIEW FOR PLAYER PARTICULAR TOURNAMENT AND THEIR STATS
+CREATE TABLE tournament_players (
+  player_id INTEGER REFERENCES players(id)         NOT NULL,
+  tournament_id INTEGER REFERENCES tournaments(id) NOT NULL,
+  PRIMARY KEY (player_id, tournament_id));
 
 -- TOURNAMENT : PAIR UP PLAYERS
 CREATE TABLE tournaments (
-  id SERIAL PRIMARY KEY ,
-  name TEXT);
+  id   SERIAL PRIMARY KEY NOT NULL,
+  name TEXT               NOT NULL);
 
 CREATE TABLE tournament (
-  td INTEGER REFERENCES tournaments(id),
-  match SERIAL,
+  t_id     INTEGER REFERENCES tournaments(id) NOT NULL,
+  match    SERIAL                             NOT NULL,
   player_1 INTEGER REFERENCES players(id),
   player_2 INTEGER REFERENCES players(id),
-  winner INTEGER REFERENCES players(id),
+  winner   INTEGER REFERENCES players(id),
   PRIMARY KEY (td, match));
+
+CREATE VIEW tournament_size as
+  SELECT tournament_id, count(*) as total_players
+  FROM tournament_players
+  GROUP BY tournament_id;
+
