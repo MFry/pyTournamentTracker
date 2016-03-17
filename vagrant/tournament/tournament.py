@@ -31,23 +31,30 @@ def countPlayers():
     """
     conn = connect()
     cur = conn.cursor()
-    cur.Execute('SELECT * FROM tournament_players;')
+    cur.execute('SELECT * FROM tournament_players;')
     players_count = cur.fetchall()
+    print(players_count)
     return players_count # TODO: Find what should be returned.
 
 
-def registerPlayer(name):
+def registerPlayer(name, tournament='default'):
     """Adds a player to the tournament database.
-  
+
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
-  
+
     Args:
       name: the player's full name (need not be unique).
+
+    :param name:
+    :param tournament:
+    :return:
     """
     conn = connect()
     cur = conn.cursor()
     cur.execute('INSERT INTO players VALUES (%s);', (bleach.clean(name),))
+    cur.execute('INSERT INTO tournament_payers VALUES (%s);', (bleach.clean(tournament)))
+    cur.execute('')
     conn.commit()
     conn.close()
 
@@ -74,6 +81,7 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+
  
  
 def swissPairings():
@@ -92,4 +100,5 @@ def swissPairings():
         name2: the second player's name
     """
 
-
+registerPlayer('Steve Bobs')
+countPlayers()
