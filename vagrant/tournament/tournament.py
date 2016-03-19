@@ -40,10 +40,19 @@ def countPlayers():
     """
     conn = connect()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM tournament_players;')
+    cur.execute('SELECT * FROM tournament_size;')
     players_count = cur.fetchall()
     print(players_count)
     return players_count # TODO: Find what should be returned.
+
+
+def registerTournament(name):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO tournaments VALUES (%s);', (name,))
+    conn.commit()
+    conn.close()
+
 
 
 def registerPlayer(name, tournament='default'):
@@ -61,9 +70,14 @@ def registerPlayer(name, tournament='default'):
     """
     conn = connect()
     cur = conn.cursor()
-    cur.execute('INSERT INTO players VALUES (%s);', (bleach.clean(name),))
-    cur.execute('INSERT INTO tournament_payers VALUES (%s);', (bleach.clean(tournament)))
-    cur.execute('')
+    cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (bleach.clean(name),))
+    conn.commit()
+    player_id = cur.fetchone()[0]
+    cur.execute('SELECT * FROM tournaments WHERE name = (%s);', (tournament,))
+    tournament_id = cur.fetchone()[1]
+    print(player_id, tournament_id)
+    cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
+    #cur.execute('')
     conn.commit()
     conn.close()
 
@@ -109,5 +123,9 @@ def swissPairings():
         name2: the second player's name
     """
 
+registerTournament('default')
 registerPlayer('Steve Bobs')
+registerPlayer('Michal Frystacky')
+registerPlayer('Steve Davies')
+registerPlayer('test3')
 countPlayers()
