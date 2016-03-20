@@ -23,10 +23,10 @@ CREATE TABLE tournament_players (
 
 CREATE TABLE tournament (
   t_id     INTEGER REFERENCES tournaments(id) NOT NULL,
-  match    SERIAL                             NOT NULL,
   player_1 INTEGER REFERENCES players(id),
   player_2 INTEGER REFERENCES players(id),
   winner   INTEGER REFERENCES players(id),
+  match    SERIAL                             NOT NULL,
   PRIMARY KEY (t_id, match));
 
 -- TODO: Join tournaments with tournament_players and aggregate on tournament_players and create count(*)
