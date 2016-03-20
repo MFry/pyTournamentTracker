@@ -31,10 +31,12 @@ CREATE TABLE tournament (
 
 -- TODO: Join tournaments with tournament_players and aggregate on tournament_players and create count(*)
 CREATE VIEW tournament_size AS
-  SELECT tournament_id, tournaments.name, count(*) as total_players
-  FROM tournament_players, tournaments
+  SELECT tournament_id, name, count(*) as total_players
+  FROM tournament_players
+  JOIN tournaments
+    ON tournament_id = id
   GROUP BY tournament_id;
 
 CREATE VIEW player_stats AS
-  SELECT t_id, count(winner) as games_won, count() as matches_played
+  SELECT t_id, count(winner) as games_won, count(*) as matches_played
   FROM tournament
