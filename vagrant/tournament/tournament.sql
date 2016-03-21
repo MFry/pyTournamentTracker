@@ -32,6 +32,7 @@ CREATE VIEW view_players_tournaments AS
   JOIN tournaments ON tournament_id = tournaments.id
   JOIN players ON player_id = players.id;
 
+-- TODO: Figure out why you need to group by multiple group by
 CREATE VIEW view_tournament_size AS
   SELECT tournament_id, tournament_name, count(tournament_id) AS total_players
   FROM view_players_tournaments
@@ -45,14 +46,7 @@ CREATE TABLE tournament (
   match    SERIAL                             NOT NULL,
   PRIMARY KEY (t_id, match));
 
--- TODO: Join tournaments with tournament_players and aggregate on tournament_players and create count(*)
-CREATE VIEW tournament_size AS
-  SELECT tournament_id, name, count(*) as total_players
-  FROM tournament_players
-  JOIN tournaments
-    ON tournament_id = id
-  GROUP BY tournament_id;
-
+-- TODO: finish player stats view
 CREATE VIEW player_stats AS
   SELECT t_id, count(winner) as games_won, count(*) as matches_played
   FROM tournament
