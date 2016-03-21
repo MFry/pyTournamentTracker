@@ -21,6 +21,22 @@ CREATE TABLE tournament_players (
   tournament_id INTEGER REFERENCES tournaments(id) NOT NULL,
   PRIMARY KEY (player_id, tournament_id));
 
+-- VIEW THAT UNIONS players, tournaments and the tournament_players
+-- Essentially pulls the text fields so that its both human and machine workable
+CREATE VIEW view_players_tournaments AS
+  SELECT tournaments.name AS tournament_name,
+    tournament_id,
+    players.name AS player_name,
+    player_id
+  FROM tournament_players
+  JOIN tournaments ON tournament_id = tournaments.id
+  JOIN players ON player_id = players.id;
+
+CREATE VIEW view_tournament_size AS
+  SELECT tournament_id, tournament_name, count(tournament_id) AS total_players
+  FROM view_players_tournaments
+  GROUP BY tournament_id, tournament_name;
+
 CREATE TABLE tournament (
   t_id     INTEGER REFERENCES tournaments(id) NOT NULL,
   player_1 INTEGER REFERENCES players(id),
