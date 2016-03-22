@@ -12,8 +12,9 @@ CREATE TABLE players (
 
 -- TOURNAMENT : PAIR UP PLAYERS
 CREATE TABLE tournaments (
-  name TEXT               NOT NULL,
-  id   SERIAL PRIMARY KEY NOT NULL);
+  name  TEXT               NOT NULL,
+  match SERIAL             NOT NULL,
+  id    SERIAL PRIMARY KEY NOT NULL);
 
 -- VIEW FOR PLAYER PARTICULAR TOURNAMENT AND THEIR STATS
 CREATE TABLE tournament_players (
@@ -39,11 +40,11 @@ CREATE VIEW view_tournament_size AS
   GROUP BY tournament_id, tournament_name;
 
 CREATE TABLE tournament (
-  t_id     INTEGER REFERENCES tournaments(id) NOT NULL,
+  t_id     INTEGER REFERENCES tournaments(id)   NOT NULL,
   player_1 INTEGER REFERENCES players(id),
   player_2 INTEGER REFERENCES players(id),
   winner   INTEGER REFERENCES players(id),
-  match    SERIAL                             NOT NULL,
+  match    SERIAL REFERENCES tournaments(match) NOT NULL,
   PRIMARY KEY (t_id, match));
 
 -- TODO: finish player stats view
