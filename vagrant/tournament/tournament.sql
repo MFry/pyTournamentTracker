@@ -50,4 +50,16 @@ CREATE TABLE tournament (
 -- TODO: finish player stats view
 CREATE VIEW player_stats AS
   SELECT t_id, count(winner) as games_won, count(*) as matches_played
-  FROM tournament
+  FROM tournament;
+
+INSERT INTO tournament VALUES (1, 1, 2, 2, 1);
+INSERT INTO tournament VALUES (2, 5, 6, 5, 1);
+INSERT INTO tournament VALUES (1, 3, 4, 3, 2);
+INSERT INTO tournament VALUES (1, 2, 3, 2, 3);
+INSERT INTO tournament VALUES (1, 4, 1, 1, 4);
+INSERT INTO tournament VALUES (1, 1, 3, 3, 5);
+
+
+
+SELECT concat(player_1, player_2) AS players
+FROM tournament;
