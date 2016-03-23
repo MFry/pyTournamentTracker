@@ -16,7 +16,7 @@ CREATE TABLE tournaments (
   match SERIAL             NOT NULL,
   id    SERIAL PRIMARY KEY NOT NULL);
 
--- VIEW FOR PLAYER PARTICULAR TOURNAMENT AND THEIR STATS
+-- View for participants in a particular tournament
 CREATE TABLE tournament_players (
   player_id INTEGER REFERENCES players(id)         NOT NULL,
   tournament_id INTEGER REFERENCES tournaments(id) NOT NULL,
@@ -52,6 +52,20 @@ CREATE VIEW player_stats AS
   SELECT t_id, count(winner) as games_won, count(*) as matches_played
   FROM tournament;
 
+INSERT INTO tournaments VALUES('tournament1');
+INSERT INTO tournaments VALUES('tournament2');
+INSERT INTO players VALUES('p1');
+INSERT INTO players VALUES('p2');
+INSERT INTO players VALUES('p3');
+INSERT INTO players VALUES('p4');
+INSERT INTO players VALUES('p5');
+INSERT INTO players VALUES('p6');
+INSERT INTO tournament_players VALUES(1, 1);
+INSERT INTO tournament_players VALUES(2, 1);
+INSERT INTO tournament_players VALUES(3, 1);
+INSERT INTO tournament_players VALUES(4, 1);
+INSERT INTO tournament_players VALUES(5, 2);
+INSERT INTO tournament_players VALUES(6, 2);
 INSERT INTO tournament VALUES (1, 1, 2, 2, 1);
 INSERT INTO tournament VALUES (2, 5, 6, 5, 1);
 INSERT INTO tournament VALUES (1, 3, 4, 3, 2);
@@ -59,7 +73,8 @@ INSERT INTO tournament VALUES (1, 2, 3, 2, 3);
 INSERT INTO tournament VALUES (1, 4, 1, 1, 4);
 INSERT INTO tournament VALUES (1, 1, 3, 3, 5);
 
-
-
-SELECT concat(player_1, player_2) AS players
-FROM tournament;
+SELECT * FROM players;
+SELECT * FROM tournaments;
+SELECT * FROM tournament;
+SELECT * FROM view_players_tournaments;
+SELECT * FROM view_tournament_size;
