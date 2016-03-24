@@ -48,9 +48,11 @@ CREATE TABLE tournament_stats (
 -- TODO: finish player stats view
 CREATE VIEW player_stats AS
   SELECT t_id, games_won, count(*) as matches_played
-  FROM (SELECT player, count(winner) as games_won
-FROM tournament
-GROUP BY t_id) AS player_wins, tournament_stats;
+  FROM (SELECT player, t_id,
+  COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
+FROM tournament_stats
+GROUP BY t_id, player
+ORDER BY t_id, player) AS player_wins, tournament_stats;
 
 
 
@@ -69,17 +71,22 @@ INSERT INTO tournament_players VALUES(3, 1);
 INSERT INTO tournament_players VALUES(4, 1);
 INSERT INTO tournament_players VALUES(5, 2);
 INSERT INTO tournament_players VALUES(6, 2);
+INSERT INTO tournament_players VALUES(1, 2);
 INSERT INTO tournament_stats VALUES (1, 1, True, 1);
 INSERT INTO tournament_stats VALUES (1, 2, False, 1);
+INSERT INTO tournament_stats VALUES (1, 3, FALSE, 2);
+INSERT INTO tournament_stats VALUES (1, 4, TRUE, 2);
+INSERT INTO tournament_stats VALUES (1, 1, TRUE, 3);
+INSERT INTO tournament_stats VALUES (1, 3, FALSE, 3);
+INSERT INTO tournament_stats VALUES (1, 2, FALSE, 4);
+INSERT INTO tournament_stats VALUES (1, 3, TRUE, 4);
+-- Nonsensical matches
+-- INSERT INTO tournament_stats VALUES (1, 1, FALSE, 5);
+-- INSERT INTO tournament_stats VALUES (1, 3, FALSE, 5);
+--T2
 INSERT INTO tournament_stats VALUES (2, 5, TRUE, 1);
 INSERT INTO tournament_stats VALUES (2, 6, FALSE, 1);
-INSERT INTO tournament_stats VALUES (1, 3, TRUE, 2);
-INSERT INTO tournament_stats VALUES (1, 4, TRUE, 2);
-INSERT INTO tournament_stats VALUES (1, 2, TRUE, 3);
-INSERT INTO tournament_stats VALUES (1, 3, FALSE, 3);
-INSERT INTO tournament_stats VALUES (1, 4, FALSE, 4);
-INSERT INTO tournament_stats VALUES (1, 1, TRUE, 4);
-INSERT INTO tournament_stats VALUES (1, 1, TRUE, 5);
-INSERT INTO tournament_stats VALUES (1, 3, FALSE, 5);
-
+INSERT INTO tournament_stats VALUES (2, 1, TRUE, 2);
+INSERT INTO tournament_stats VALUES (2, 1, TRUE, 3);
+INSERT INTO tournament_stats VALUES (2, 5, FALSE, 4);
 
