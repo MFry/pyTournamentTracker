@@ -6,8 +6,8 @@ apt-get -qq update
 echo "Importing PostgreSQL key and installing software"
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main 9.5" >> /etc/apt/sources.list.d/pgdg.list
-sudo apt-get update
-sudo apt-get -y install postgresql-9.5 postgresql-client-9.5 postgresql-contrib-9.5
+sudo apt-get update -qq
+sudo apt-get -qq install postgresql-9.5 postgresql-client-9.5 postgresql-contrib-9.5
 
 # Create the user to access the db. (vagrant sample)
 sudo -u postgres psql -c "CREATE USER vagrant WITH SUPERUSER CREATEDB ENCRYPTED PASSWORD 'vagrant'"
