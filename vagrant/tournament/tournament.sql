@@ -39,18 +39,13 @@ CREATE VIEW view_tournament_size AS
   FROM view_players_tournaments
   GROUP BY tournament_id, tournament_name;
 
-CREATE TABLE tournament (
+CREATE TABLE tournament_stats (
   t_id     INTEGER REFERENCES tournaments(id)   NOT NULL,
-  player_1 INTEGER REFERENCES players(id),
-  player_2 INTEGER REFERENCES players(id),
-  winner   INTEGER REFERENCES players(id),
+  player   INTEGER REFERENCES players(id)       NOT NULL,
+  winner   BOOLEAN                              NOT NULL,
   match    SERIAL REFERENCES tournaments(match) NOT NULL,
   PRIMARY KEY (t_id, match));
 
--- TODO: finish player stats view
-CREATE VIEW player_stats AS
-  SELECT t_id, count(winner) as games_won, count(*) as matches_played
-  FROM tournament;
 
 INSERT INTO tournaments VALUES('tournament1');
 INSERT INTO tournaments VALUES('tournament2');
@@ -66,15 +61,15 @@ INSERT INTO tournament_players VALUES(3, 1);
 INSERT INTO tournament_players VALUES(4, 1);
 INSERT INTO tournament_players VALUES(5, 2);
 INSERT INTO tournament_players VALUES(6, 2);
-INSERT INTO tournament VALUES (1, 1, 2, 2, 1);
-INSERT INTO tournament VALUES (2, 5, 6, 5, 1);
-INSERT INTO tournament VALUES (1, 3, 4, 3, 2);
-INSERT INTO tournament VALUES (1, 2, 3, 2, 3);
-INSERT INTO tournament VALUES (1, 4, 1, 1, 4);
-INSERT INTO tournament VALUES (1, 1, 3, 3, 5);
-
-SELECT * FROM players;
-SELECT * FROM tournaments;
-SELECT * FROM tournament;
-SELECT * FROM view_players_tournaments;
-SELECT * FROM view_tournament_size;
+INSERT INTO tournament_stats VALUES (1, 1, True, 1);
+INSERT INTO tournament_stats VALUES (1, 2, False, 1);
+INSERT INTO tournament_stats VALUES (2, 5, TRUE, 1);
+INSERT INTO tournament_stats VALUES (2, 6, FALSE, 1);
+INSERT INTO tournament_stats VALUES (1, 3, TRUE, 2);
+INSERT INTO tournament_stats VALUES (1, 4, TRUE, 2);
+INSERT INTO tournament_stats VALUES (1, 2, TRUE, 3);
+INSERT INTO tournament_stats VALUES (1, 3, FALSE, 3);
+INSERT INTO tournament_stats VALUES (1, 4, FALSE, 4);
+INSERT INTO tournament_stats VALUES (1, 1, TRUE, 4);
+INSERT INTO tournament_stats VALUES (1, 1, TRUE, 5);
+INSERT INTO tournament_stats VALUES (1, 3, FALSE, 5);
