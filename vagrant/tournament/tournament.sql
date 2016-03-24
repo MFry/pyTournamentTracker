@@ -43,13 +43,15 @@ CREATE TABLE tournament_stats (
   player   INTEGER REFERENCES players(id)       NOT NULL,
   winner   BOOLEAN                              NOT NULL,
   match    INTEGER                              NOT NULL,
-  id       SERIAL                              PRIMARY KEY);
+  PRIMARY KEY (t_id, player, winner, match));
 
 -- TODO: finish player stats view
+--
 CREATE VIEW player_stats AS
   SELECT t_id, games_won, count(*) as matches_played
   FROM (SELECT player, t_id,
-  COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
+  SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
+  -- COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
 FROM tournament_stats
 GROUP BY t_id, player
 ORDER BY t_id, player) AS player_wins, tournament_stats;
