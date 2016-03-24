@@ -13,7 +13,6 @@ CREATE TABLE players (
 -- TOURNAMENT : PAIR UP PLAYERS
 CREATE TABLE tournaments (
   name  TEXT               NOT NULL,
-  match SERIAL             NOT NULL,
   id    SERIAL PRIMARY KEY NOT NULL);
 
 -- View for participants in a particular tournament
@@ -43,8 +42,17 @@ CREATE TABLE tournament_stats (
   t_id     INTEGER REFERENCES tournaments(id)   NOT NULL,
   player   INTEGER REFERENCES players(id)       NOT NULL,
   winner   BOOLEAN                              NOT NULL,
-  match    SERIAL REFERENCES tournaments(match) NOT NULL,
-  PRIMARY KEY (t_id, match));
+  match    INTEGER                              NOT NULL,
+  id       SERIAL                              PRIMARY KEY);
+
+-- TODO: finish player stats view
+CREATE VIEW player_stats AS
+  SELECT t_id, games_won, count(*) as matches_played
+  FROM (SELECT player, count(winner) as games_won
+FROM tournament
+GROUP BY t_id) AS player_wins, tournament_stats;
+
+
 
 
 INSERT INTO tournaments VALUES('tournament1');
@@ -73,3 +81,5 @@ INSERT INTO tournament_stats VALUES (1, 4, FALSE, 4);
 INSERT INTO tournament_stats VALUES (1, 1, TRUE, 4);
 INSERT INTO tournament_stats VALUES (1, 1, TRUE, 5);
 INSERT INTO tournament_stats VALUES (1, 3, FALSE, 5);
+
+
