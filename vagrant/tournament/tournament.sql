@@ -48,13 +48,15 @@ CREATE TABLE tournament_stats (
 -- TODO: finish player stats view
 --
 CREATE VIEW player_stats AS
-  SELECT t_id, games_won, count(*) as matches_played
-  FROM (SELECT player, t_id,
-  SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
+  SELECT tournament_stats.t_id, tournament_stats.player, games_won, count(tournament_stats.player) as games_played
+  FROM tournament_stats
+  JOIN (SELECT t_id, player, SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
   -- COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
 FROM tournament_stats
-GROUP BY t_id, player
-ORDER BY t_id, player) AS player_wins, tournament_stats;
+GROUP BY t_id, player) AS player_wins on tournament_stats.t_id = player_wins.t_id AND
+      tournament_stats.player = player_wins.player
+GROUP BY tournament_stats.t_id, tournament_stats.player, games_won
+ORDER BY t_id, player;
 
 
 
@@ -79,7 +81,7 @@ INSERT INTO tournament_stats VALUES (1, 2, False, 1);
 INSERT INTO tournament_stats VALUES (1, 3, FALSE, 2);
 INSERT INTO tournament_stats VALUES (1, 4, TRUE, 2);
 INSERT INTO tournament_stats VALUES (1, 1, TRUE, 3);
-INSERT INTO tournament_stats VALUES (1, 3, FALSE, 3);
+INSERT INTO tournament_stats VALUES (1, 4, FALSE, 3);
 INSERT INTO tournament_stats VALUES (1, 2, FALSE, 4);
 INSERT INTO tournament_stats VALUES (1, 3, TRUE, 4);
 -- Nonsensical matches
