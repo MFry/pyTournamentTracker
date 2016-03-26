@@ -38,24 +38,27 @@ CREATE VIEW view_tournament_size AS
   FROM view_players_tournaments
   GROUP BY tournament_id, tournament_name;
 
-CREATE TABLE tournament_stats (
+CREATE TABLE matches (
   t_id     INTEGER REFERENCES tournaments(id)   NOT NULL,
   player   INTEGER REFERENCES players(id)       NOT NULL,
   winner   BOOLEAN                              NOT NULL,
   match    INTEGER                              NOT NULL,
   PRIMARY KEY (t_id, player, winner, match));
 
--- TODO: finish player stats view
---
+-- Gives stats, games won and games played, for each player in each tournament
 CREATE VIEW player_stats AS
-  SELECT tournament_stats.t_id, tournament_stats.player, games_won, count(tournament_stats.player) as games_played
-  FROM tournament_stats
-  JOIN (SELECT t_id, player, SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
+  SELECT matches.t_id,
+    matches.player,
+    games_won, count(matches.player) as games_played
+  FROM matches
+  JOIN (SELECT t_id, player,
+          SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
   -- COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
-FROM tournament_stats
-GROUP BY t_id, player) AS player_wins on tournament_stats.t_id = player_wins.t_id AND
-      tournament_stats.player = player_wins.player
-GROUP BY tournament_stats.t_id, tournament_stats.player, games_won
+FROM matches
+GROUP BY t_id, player) AS player_wins
+      ON matches.t_id = player_wins.t_id AND
+      matches.player = player_wins.player
+GROUP BY matches.t_id, matches.player, games_won
 ORDER BY t_id, player;
 
 
@@ -76,21 +79,21 @@ INSERT INTO tournament_players VALUES(4, 1);
 INSERT INTO tournament_players VALUES(5, 2);
 INSERT INTO tournament_players VALUES(6, 2);
 INSERT INTO tournament_players VALUES(1, 2);
-INSERT INTO tournament_stats VALUES (1, 1, True, 1);
-INSERT INTO tournament_stats VALUES (1, 2, False, 1);
-INSERT INTO tournament_stats VALUES (1, 3, FALSE, 2);
-INSERT INTO tournament_stats VALUES (1, 4, TRUE, 2);
-INSERT INTO tournament_stats VALUES (1, 1, TRUE, 3);
-INSERT INTO tournament_stats VALUES (1, 4, FALSE, 3);
-INSERT INTO tournament_stats VALUES (1, 2, FALSE, 4);
-INSERT INTO tournament_stats VALUES (1, 3, TRUE, 4);
+INSERT INTO matches VALUES (1, 1, True, 1);
+INSERT INTO matches VALUES (1, 2, False, 1);
+INSERT INTO matches VALUES (1, 3, FALSE, 2);
+INSERT INTO matches VALUES (1, 4, TRUE, 2);
+INSERT INTO matches VALUES (1, 1, TRUE, 3);
+INSERT INTO matches VALUES (1, 4, FALSE, 3);
+INSERT INTO matches VALUES (1, 2, FALSE, 4);
+INSERT INTO matches VALUES (1, 3, TRUE, 4);
 -- Nonsensical matches
 -- INSERT INTO tournament_stats VALUES (1, 1, FALSE, 5);
 -- INSERT INTO tournament_stats VALUES (1, 3, FALSE, 5);
 --T2
-INSERT INTO tournament_stats VALUES (2, 5, TRUE, 1);
-INSERT INTO tournament_stats VALUES (2, 6, FALSE, 1);
-INSERT INTO tournament_stats VALUES (2, 1, TRUE, 2);
-INSERT INTO tournament_stats VALUES (2, 1, TRUE, 3);
-INSERT INTO tournament_stats VALUES (2, 5, FALSE, 4);
+INSERT INTO matches VALUES (2, 5, TRUE, 1);
+INSERT INTO matches VALUES (2, 6, FALSE, 1);
+INSERT INTO matches VALUES (2, 1, TRUE, 2);
+INSERT INTO matches VALUES (2, 1, TRUE, 3);
+INSERT INTO matches VALUES (2, 5, FALSE, 4);
 
