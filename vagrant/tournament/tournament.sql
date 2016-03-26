@@ -38,6 +38,8 @@ CREATE VIEW view_tournament_size AS
   FROM view_players_tournaments
   GROUP BY tournament_id, tournament_name;
 
+-- Stores the matches for each tournament
+-- One row per one player that participated in a match in a tournament
 CREATE TABLE matches (
   t_id     INTEGER REFERENCES tournaments(id)   NOT NULL,
   player   INTEGER REFERENCES players(id)       NOT NULL,
