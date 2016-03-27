@@ -20,7 +20,7 @@ def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     cur = conn.cursor()
-    cur.execute('DELETE FROM tournament;')
+    cur.execute('DELETE FROM tournament;')  # TODO: Cascade delete tournament_players
     conn.comit()
     conn.close()
 
@@ -29,7 +29,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     conn = connect()
     cur = conn.cursor()
-    cur.execute('DELETE FROM players;')
+    cur.execute('DELETE FROM players;') # TODO: Cascade delete tournament_players
     conn.comit()
     conn.close()
 
@@ -40,10 +40,10 @@ def countPlayers():
     """
     conn = connect()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM tournament_size;')
-    players_count = cur.fetchall()
-    print(players_count)
-    return players_count # TODO: Find what should be returned.
+    cur.execute('SELECT tournament_name, total_players FROM view_tournament_size;')
+    tournaments_player_count = cur.fetchall()
+    print(tournaments_player_count)
+    return tournaments_player_count
 
 
 def registerTournament(name):
@@ -123,9 +123,9 @@ def swissPairings():
         name2: the second player's name
     """
 
-registerTournament('default')
-registerPlayer('Steve Bobs')
-registerPlayer('Michal Frystacky')
-registerPlayer('Steve Davies')
-registerPlayer('test3')
+#registerTournament('default')
+#registerPlayer('Steve Bobs')
+#registerPlayer('Michal Frystacky')
+#registerPlayer('Steve Davies')
+#registerPlayer('test3')
 countPlayers()
