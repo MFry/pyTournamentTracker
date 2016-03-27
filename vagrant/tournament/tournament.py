@@ -16,12 +16,17 @@ def connect():
     return psycopg2.connect("dbname=tournament")
 
 
-def deleteMatches():
+def deleteMatches(tournament=None):
     """Remove all the match records from the database."""
     conn = connect()
     cur = conn.cursor()
-    cur.execute('DELETE FROM tournament;')  # TODO: Cascade delete tournament_players
-    conn.comit()
+    if tournament:
+        cur.execute('SELECT id FROM tournaments where name = (%s);', (tournament,))
+        tournament_id = cur.fetchone()[0]
+        cur.execute('DELETE FROM matches WHERE t_id = (%s)', (tournament_id,))
+    else:
+        cur.execute('DELETE FROM matches;')
+    conn.commit()
     conn.close()
 
 
@@ -30,7 +35,7 @@ def deletePlayers():
     conn = connect()
     cur = conn.cursor()
     cur.execute('DELETE FROM players;') # TODO: Cascade delete tournament_players
-    conn.comit()
+    conn.commit()
     conn.close()
 
 def countPlayers():
@@ -129,3 +134,4 @@ def swissPairings():
 #registerPlayer('Steve Davies')
 #registerPlayer('test3')
 countPlayers()
+deleteMatches(tournament='tournament1')
