@@ -48,7 +48,7 @@ CREATE TABLE matches (
   PRIMARY KEY (t_id, player, winner, match));
 
 -- Gives stats, games won and games played, for each player in each tournament
-CREATE VIEW player_stats AS
+CREATE VIEW view_player_stats AS
   SELECT matches.t_id,
     matches.player,
     games_won, count(matches.player) as games_played
