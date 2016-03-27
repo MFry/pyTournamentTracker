@@ -80,8 +80,8 @@ def registerPlayer(name, tournament='default'):
     cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (bleach.clean(name),))
     conn.commit()
     player_id = cur.fetchone()[0]
-    cur.execute('SELECT * FROM tournaments WHERE name = (%s);', (tournament,))
-    tournament_id = cur.fetchone()[1]
+    cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,)) # TODO: Check the logic on this
+    tournament_id = cur.fetchone()[0]
     print(player_id, tournament_id)
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
     #cur.execute('')
