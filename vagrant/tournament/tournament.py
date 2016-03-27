@@ -56,10 +56,11 @@ def countPlayers():
 def registerTournament(name):
     conn = connect()
     cur = conn.cursor()
-    cur.execute('INSERT INTO tournaments VALUES (%s);', (name,))
+    cur.execute('INSERT INTO tournaments VALUES (%s) RETURNING id;', (name,))
     conn.commit()
+    tournament_id = cur.fetchone()[0]
     conn.close()
-
+    return tournament_id
 
 
 def registerPlayer(name, tournament='default'):
@@ -78,13 +79,14 @@ def registerPlayer(name, tournament='default'):
     conn = connect()
     cur = conn.cursor()
     cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (bleach.clean(name),))
-    conn.commit()
     player_id = cur.fetchone()[0]
     cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,)) # TODO: Check the logic on this
-    tournament_id = cur.fetchone()[0]
+    if cur.fetchone():
+        tournament_id = cur.fetchone()[0]
+    else:
+        tournament_id = registerTournament(tournament)
     print(player_id, tournament_id)
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
-    #cur.execute('')
     conn.commit()
     conn.close()
 
@@ -131,9 +133,10 @@ def swissPairings():
     """
 
 #registerTournament('default')
-#registerPlayer('Steve Bobs')
+registerPlayer('Steve Bobs')
 #registerPlayer('Michal Frystacky')
 #registerPlayer('Steve Davies')
 #registerPlayer('test3')
 countPlayers()
-deleteMatches(tournament='tournament1')
+#deleteMatches(tournament='tournament1')
+#deleteMatches()
