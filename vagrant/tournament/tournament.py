@@ -34,7 +34,9 @@ def deletePlayers():
     """Remove all the player records from the database."""
     conn = connect()
     cur = conn.cursor()
-    cur.execute('DELETE FROM players;') # TODO: Cascade delete tournament_players
+    cur.execute('DELETE FROM players;')
+    cur.execute('DELETE FROM tournament_players;')
+    cur.execute('DELETE FROM matches;')
     conn.commit()
     conn.close()
 
