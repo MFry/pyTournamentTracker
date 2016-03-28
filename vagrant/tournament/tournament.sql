@@ -12,7 +12,7 @@ CREATE TABLE players (
 
 -- TOURNAMENT : PAIR UP PLAYERS
 CREATE TABLE tournaments (
-  name  TEXT               NOT NULL,
+  name  TEXT   UNIQUE      NOT NULL,
   id    SERIAL PRIMARY KEY NOT NULL);
 
 -- View for participants in a particular tournament
