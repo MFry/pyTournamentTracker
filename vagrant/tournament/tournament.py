@@ -53,15 +53,26 @@ def countPlayers():
     return tournaments_player_count
 
 
-def registerTournament(name):
+def registerTournament(tournament):
     conn = connect()
     cur = conn.cursor()
-    cur.execute('INSERT INTO tournaments VALUES (%s) RETURNING id;', (name,))
+    cur.execute('INSERT INTO tournaments VALUES (%s) RETURNING id;', (tournament,))
     conn.commit()
     tournament_id = cur.fetchone()[0]
     conn.close()
     return tournament_id
 
+
+def getTournament(tournament):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,)) # TODO: Check the logic on this
+    if cur.fetchone():
+        tournament_id = cur.fetchone()[0]
+    else:
+        tournament_id = cur.fetchone()
+    conn.close()
+    return tournament_id
 
 def registerPlayer(name, tournament='default'):
     """Adds a player to the tournament database.
@@ -80,10 +91,8 @@ def registerPlayer(name, tournament='default'):
     cur = conn.cursor()
     cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (bleach.clean(name),))
     player_id = cur.fetchone()[0]
-    cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,)) # TODO: Check the logic on this
-    if cur.fetchone():
-        tournament_id = cur.fetchone()[0]
-    else:
+    tournament_id = getTournament(tournament)
+    if not tournament_id:
         tournament_id = registerTournament(tournament)
     print(player_id, tournament_id)
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
@@ -106,7 +115,7 @@ def playerStandings():
     """
 
 
-def reportMatch(winner, loser):
+def reportMatch(winner, loser, tournament='default'):
     """Records the outcome of a single match between two players.
 
     Args:
@@ -132,11 +141,12 @@ def swissPairings():
         name2: the second player's name
     """
 
-#registerTournament('default')
-registerPlayer('Steve Bobs')
+registerTournament('default')
+print(getTournament('default'))
+#registerPlayer('Steve Bobs')
 #registerPlayer('Michal Frystacky')
 #registerPlayer('Steve Davies')
 #registerPlayer('test3')
-countPlayers()
+#countPlayers()
 #deleteMatches(tournament='tournament1')
 #deleteMatches()
