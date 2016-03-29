@@ -66,13 +66,16 @@ def registerTournament(tournament):
 def getTournament(tournament):
     conn = connect()
     cur = conn.cursor()
-    cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,)) # TODO: Check the logic on this
-    if cur.fetchone():
-        tournament_id = cur.fetchone()[0]
+    cur.execute('SELECT id FROM tournaments WHERE name = %s;', (tournament,))  # TODO: Check the logic on this
+    val = cur.fetchone()
+    if val:
+        print(val)
+        tournament_id = val[0]
     else:
-        tournament_id = cur.fetchone()
+        tournament_id = val
     conn.close()
     return tournament_id
+
 
 def registerPlayer(name, tournament='default'):
     """Adds a player to the tournament database.
@@ -115,14 +118,25 @@ def playerStandings():
     """
 
 
-def reportMatch(winner, loser, tournament='default'):
-    """Records the outcome of a single match between two players.
-
-    Args:
-      winner:  the id number of the player who won
-      loser:  the id number of the player who lost
+def reportMatch(players, tournament='default'):
     """
+        Records the outcome of a single match between two players/teams.
 
+    :param players: dictionary of
+                    key: id numbers of the players
+                    value: Boolean whether they won or lost
+    :type players: dict of (str, bool)
+    :param tournament:
+    :return:
+    """
+    conn = connect()
+    cur = conn.cursor()
+    tournament_id = getTournament(tournament)
+    cur.execute('SELECT max(match) as last_match FROM matches WHERE t_id = {};'.format(tournament_id))
+    last_match = cur.fecthone()[0]
+    for player in players:
+        cur.execute('INSERT INTO matches (t_id, player, winner, match) VALUES (%s, %s, %s, %s);',
+                    (tournament_id, player, players[player], last_match+1))
  
  
 def swissPairings():
@@ -141,8 +155,10 @@ def swissPairings():
         name2: the second player's name
     """
 
-registerTournament('default')
-print(getTournament('default'))
+#registerTournament('default')
+#print(getTournament('default'))
+print(getTournament('tournament1'))
+#reportMatch({1:'True', 2:'False'}, tournament='tournament1')
 #registerPlayer('Steve Bobs')
 #registerPlayer('Michal Frystacky')
 #registerPlayer('Steve Davies')
