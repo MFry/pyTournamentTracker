@@ -69,7 +69,6 @@ def getTournament(tournament):
     cur.execute('SELECT id FROM tournaments WHERE name = %s;', (tournament,))  # TODO: Check the logic on this
     val = cur.fetchone()
     if val:
-        print(val)
         tournament_id = val[0]
     else:
         tournament_id = val
@@ -103,7 +102,7 @@ def registerPlayer(name, tournament='default'):
     conn.close()
 
 
-def playerStandings():
+def playerStandings(tournament='default'):
     """Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
@@ -116,7 +115,16 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-
+    conn = connect()
+    cur = conn.cursor()
+    tournament_id = getTournament(tournament)
+    if not tournament_id:
+        return None
+    cur.execute('SELECT * FROM view_player_stats WHERE t_id = %s ORDER BY games_won, t_id',
+                (tournament_id,))
+    standings = cur.fetchall()
+    print(standings)
+    conn.close()
 
 def reportMatch(players, tournament='default'):
     """
@@ -157,7 +165,8 @@ def swissPairings():
 
 #registerTournament('default')
 #print(getTournament('default'))
-print(getTournament('tournament1'))
+#print(getTournament('tournament1'))
+playerStandings('tournament1')
 #reportMatch({1:'True', 2:'False'}, tournament='tournament1')
 #registerPlayer('Steve Bobs')
 #registerPlayer('Michal Frystacky')
