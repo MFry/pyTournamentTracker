@@ -51,7 +51,8 @@ CREATE TABLE matches (
 CREATE VIEW view_player_stats AS
   SELECT matches.t_id,
     matches.player,
-    games_won, count(matches.player) as games_played
+    games_won,
+    count(matches.player) as games_played
   FROM matches
   JOIN (SELECT t_id, player,
           SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
