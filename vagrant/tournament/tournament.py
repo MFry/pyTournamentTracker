@@ -110,11 +110,14 @@ def playerStandings(tournament='default'):
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
+        t_id: The tournament in which the player's participating in
         id: the player's unique id (assigned by the database)
         name: the player's full name (as registered)
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+
+    # TODO: Figure out if tournament is even necessary
     conn = connect()
     cur = conn.cursor()
     tournament_id = getTournament(tournament)
