@@ -148,7 +148,7 @@ def reportMatch(players, tournament='default'):
     for player in players:
         cur.execute('INSERT INTO matches (t_id, player, winner, match) VALUES (%s, %s, %s, %s);',
                     (tournament_id, player, players[player], last_match+1))
- 
+    # TODO: Finish and test whether this function is properly implemented
  
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
