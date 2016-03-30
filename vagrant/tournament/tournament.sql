@@ -51,18 +51,23 @@ CREATE TABLE matches (
 CREATE VIEW view_player_stats AS
   SELECT matches.t_id,
     matches.player,
+    view_players_tournaments.player_name,
     games_won,
     count(matches.player) as games_played
   FROM matches
-  JOIN (SELECT t_id, player,
+  JOIN
+    (SELECT t_id, player,
           SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
-  -- COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
-FROM matches
-GROUP BY t_id, player) AS player_wins
-      ON matches.t_id = player_wins.t_id AND
-      matches.player = player_wins.player
-GROUP BY matches.t_id, matches.player, games_won
-ORDER BY t_id, player;
+      -- COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
+      FROM matches
+      GROUP BY t_id, player) AS player_wins
+    ON matches.t_id = player_wins.t_id
+    AND matches.player = player_wins.player
+  JOIN view_players_tournaments
+    ON matches.t_id = view_players_tournaments.tournament_id
+    AND matches.player = view_players_tournaments.player_id
+  GROUP BY matches.t_id, matches.player, view_players_tournaments.player_name, games_won
+  ORDER BY t_id, player;
 
 
 
