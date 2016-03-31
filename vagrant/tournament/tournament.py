@@ -117,13 +117,12 @@ def playerStandings(tournament='default'):
         matches: the number of matches the player has played
     """
 
-    # TODO: Figure out if tournament is even necessary
     conn = connect()
     cur = conn.cursor()
     tournament_id = getTournament(tournament)
     if not tournament_id:
         return None
-    cur.execute('SELECT * FROM view_player_stats WHERE t_id = %s ORDER BY games_won, t_id',
+    cur.execute('SELECT player, player_name, games_won, games_played FROM view_player_stats WHERE t_id = %s ORDER BY games_won DESC, games_played DESC;',
                 (tournament_id,))
     standings = cur.fetchall()
     conn.close()
@@ -172,7 +171,7 @@ def swissPairings():
 #print(getTournament('default'))
 #print(getTournament('tournament1'))
 print(playerStandings('tournament1'))
-reportMatch({1:'True', 2:'False'}, tournament='tournament1')
+#reportMatch({1:'True', 2:'False'}, tournament='tournament1')
 #registerPlayer('Steve Bobs')
 #registerPlayer('Michal Frystacky')
 #registerPlayer('Steve Davies')
