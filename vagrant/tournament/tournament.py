@@ -151,7 +151,7 @@ def reportMatch(players, tournament='default'):
     conn.commit()
     conn.close()
  
-def swissPairings():
+def swissPairings(tournament='default'):
     """Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player
@@ -166,6 +166,9 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    player_standings = playerStandings(tournament)
+
+
 
 #registerTournament('default')
 #print(getTournament('default'))
