@@ -67,7 +67,7 @@ CREATE VIEW view_player_stats AS
     ON matches.t_id = view_players_tournaments.tournament_id
     AND matches.player = view_players_tournaments.player_id
   GROUP BY matches.t_id, matches.player, view_players_tournaments.player_name, games_won
-  ORDER BY t_id, games_won, games_played;
+  ORDER BY t_id, games_won DESC, games_played DESC;
 
 
 
