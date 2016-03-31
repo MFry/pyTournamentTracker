@@ -139,6 +139,8 @@ def reportMatch(players, tournament='default'):
     :param tournament:
     :return:
     """
+    if not tournament:
+        raise ValueError('tournament has unsupported value of {}'.format(str(tournament)))
     conn = connect()
     cur = conn.cursor()
     tournament_id = getTournament(tournament)
