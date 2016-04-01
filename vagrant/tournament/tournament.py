@@ -123,7 +123,7 @@ def playerStandings(tournament='default'):
     tournament_id = getTournament(tournament)
     if not tournament_id:
         return None
-    cur.execute('SELECT * FROM view_player_stats WHERE t_id = %s ORDER BY games_won, t_id',
+    cur.execute('SELECT player, player_name, games_won, games_played FROM view_player_stats WHERE t_id = %s ORDER BY games_won DESC, games_played DESC;',
                 (tournament_id,))
     standings = cur.fetchall()
     print(standings)
@@ -140,15 +140,19 @@ def reportMatch(players, tournament='default'):
     :param tournament:
     :return:
     """
+    if not tournament:
+        raise ValueError('tournament has unsupported value of {}'.format(str(tournament)))
     conn = connect()
     cur = conn.cursor()
     tournament_id = getTournament(tournament)
-    cur.execute('SELECT max(match) as last_match FROM matches WHERE t_id = {};'.format(tournament_id))
-    last_match = cur.fecthone()[0]
+    cur.execute('SELECT max(match) as last_match FROM matches WHERE t_id = %s;', (tournament_id,))
+    last_match = cur.fetchone()[0]
+    print(last_match)
     for player in players:
         cur.execute('INSERT INTO matches (t_id, player, winner, match) VALUES (%s, %s, %s, %s);',
                     (tournament_id, player, players[player], last_match+1))
-    # TODO: Finish and test whether this function is properly implemented
+    conn.commit()
+    conn.close()
  
 def swissPairings(tournament='default'):
     """Returns a list of pairs of players for the next round of a match.
@@ -165,13 +169,14 @@ def swissPairings(tournament='default'):
         id2: the second player's unique id
         name2: the second player's name
     """
-    standings = playerStandings(tournament)
+    player_standings = playerStandings(tournament)
+
 
 
 #registerTournament('default')
 #print(getTournament('default'))
 #print(getTournament('tournament1'))
-playerStandings('tournament1')
+print(playerStandings('tournament1'))
 #reportMatch({1:'True', 2:'False'}, tournament='tournament1')
 #registerPlayer('Steve Bobs')
 #registerPlayer('Michal Frystacky')
