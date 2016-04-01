@@ -169,7 +169,11 @@ def swissPairings(tournament='default'):
         id2: the second player's unique id
         name2: the second player's name
     """
-    player_standings = playerStandings(tournament)
+    standings = playerStandings(tournament)
+    con = connect()
+    cur = con.cursor()
+    t_id = getTournament(tournament)
+    cur.execute('SELECT * FROM matches WHERE t_id = (%s);', (t_id,))
 
 
 
