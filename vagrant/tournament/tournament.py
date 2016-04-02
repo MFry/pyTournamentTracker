@@ -175,7 +175,7 @@ def swissPairings(tournament='default'):
     t_id = getTournament(tournament)
     cur.execute('SELECT * FROM matches WHERE t_id = (%s);', (t_id,))
     matches = cur.fetchall
-
+    # TODO: Figure out how to best order ambiguous matches
 
 
 #registerTournament('default')
