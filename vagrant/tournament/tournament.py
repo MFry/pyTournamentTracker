@@ -5,6 +5,7 @@
 
 import psycopg2
 import bleach
+import networkx as nx
 
 
 def connect():
@@ -178,15 +179,21 @@ def swissPairings(tournament='default'):
     # TODO: Implement strong-weak pairing matching problem
     '''
     Create a graph with all players in current point total
+
     Connect players in the graph that have not played yet
+
     Use a Blossom based algorithm to compute a maximal matching of the graph
+
     Take any unpaired players and add them to the group with the next highest point total
+
+    Repeat until there is one or no players left
     '''
-    import networkx as nx
+
     G = nx.Graph()
     G.add_node(1, wins=10)
     G.add_node(2, wins=5)
     G.add_edge(1, 2)
+
 
 #registerTournament('default')
 #print(getTournament('default'))
