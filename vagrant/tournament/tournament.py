@@ -178,6 +178,7 @@ def swissPairings(tournament='default'):
     cur.execute('SELECT * FROM matches WHERE t_id = (%s);', (t_id,))
     matches = cur.fetchall()
     # returns [(1, 1, True, 1), (1, 2, False, 1), (1, 3, False, 2), (1, 4, True, 2), (1, 1, True, 3), (1, 4, False, 3), (1, 2, False, 4), (1, 3, True, 4)]
+    # TODO: Build a dictionary of who played who
     # TODO: Implement strong-weak pairing matching problem
     '''
     Create a graph with all players in current point total
