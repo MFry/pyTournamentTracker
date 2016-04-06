@@ -127,8 +127,8 @@ def playerStandings(tournament='default'):
     cur.execute('SELECT player, player_name, games_won, games_played FROM view_player_stats WHERE t_id = %s ORDER BY games_won DESC, games_played DESC;',
                 (tournament_id,))
     standings = cur.fetchall()
-    print(standings)
     conn.close()
+    return standings
 
 def reportMatch(players, tournament='default'):
     """
@@ -171,11 +171,14 @@ def swissPairings(tournament='default'):
         name2: the second player's name
     """
     standings = playerStandings(tournament)
+    # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
     con = connect()
     cur = con.cursor()
     t_id = getTournament(tournament)
+    print(t_id)
     cur.execute('SELECT * FROM matches WHERE t_id = (%s);', (t_id,))
     matches = cur.fetchall
+    #print(matches)
     # TODO: Implement strong-weak pairing matching problem
     '''
     Create a graph with all players in current point total
@@ -188,12 +191,12 @@ def swissPairings(tournament='default'):
 
     Repeat until there is one or no players left
     '''
-
+    '''
     G = nx.Graph()
     G.add_node(1, wins=10)
     G.add_node(2, wins=5)
     G.add_edge(1, 2)
-
+    '''
 
 #registerTournament('default')
 #print(getTournament('default'))
