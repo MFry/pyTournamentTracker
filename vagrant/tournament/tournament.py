@@ -175,10 +175,9 @@ def swissPairings(tournament='default'):
     con = connect()
     cur = con.cursor()
     t_id = getTournament(tournament)
-    print(t_id)
     cur.execute('SELECT * FROM matches WHERE t_id = (%s);', (t_id,))
-    matches = cur.fetchall
-    #print(matches)
+    matches = cur.fetchall()
+    # returns [(1, 1, True, 1), (1, 2, False, 1), (1, 3, False, 2), (1, 4, True, 2), (1, 1, True, 3), (1, 4, False, 3), (1, 2, False, 4), (1, 3, True, 4)]
     # TODO: Implement strong-weak pairing matching problem
     '''
     Create a graph with all players in current point total
@@ -201,7 +200,8 @@ def swissPairings(tournament='default'):
 #registerTournament('default')
 #print(getTournament('default'))
 #print(getTournament('tournament1'))
-print(playerStandings('tournament1'))
+print(swissPairings('tournament1'))
+#print(playerStandings('tournament1'))
 #reportMatch({1:'True', 2:'False'}, tournament='tournament1')
 #registerPlayer('Steve Bobs')
 #registerPlayer('Michal Frystacky')
