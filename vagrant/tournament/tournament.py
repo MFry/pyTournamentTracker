@@ -170,16 +170,18 @@ def swissPairings(tournament='default'):
         id2: the second player's unique id
         name2: the second player's name
     """
+    G = nx.Graph()
     standings = playerStandings(tournament)
     # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
     con = connect()
     cur = con.cursor()
     t_id = getTournament(tournament)
-    cur.execute('SELECT * FROM matches WHERE t_id = (%s);', (t_id,))
+    cur.execute('SELECT player, winner, match FROM matches WHERE t_id = (%s);', (t_id,))
     matches = cur.fetchall()
-    # returns [(1, 1, True, 1), (1, 2, False, 1), (1, 3, False, 2), (1, 4, True, 2), (1, 1, True, 3), (1, 4, False, 3), (1, 2, False, 4), (1, 3, True, 4)]
+    # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
     # TODO: Build a dictionary of who played who
     # TODO: Implement strong-weak pairing matching problem
+
     '''
     Create a graph with all players in current point total
 
