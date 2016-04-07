@@ -179,9 +179,22 @@ def swissPairings(tournament='default'):
     cur.execute('SELECT player, winner, match FROM matches WHERE t_id = (%s);', (t_id,))
     matches = cur.fetchall()
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
-    # TODO: Build a dictionary of who played who
     # TODO: Implement strong-weak pairing matching problem
-
+    for standing in standings:
+        G.add_node(standing[0],
+                   name=standing[1],
+                   win=standing[2],
+                   matches=standings[3])
+    game = 0
+    plays = {}
+    current_game = []
+    for match in matches:
+        if game == match[2]:
+            current_game.append(match[0])
+        # TODO: Build a dictionary of who played who
+        # Match everyone in the same game
+        if plays[match[0]]:
+            plays[match[0]].append(match)
     '''
     Create a graph with all players in current point total
 
