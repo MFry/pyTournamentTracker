@@ -185,16 +185,29 @@ def swissPairings(tournament='default'):
                    name=standing[1],
                    win=standing[2],
                    matches=standings[3])
-    game = 0
+
+    game = 1  # Starting game
+    # generate players
+    players = set()
+    for match in matches:
+        players.add(match[0])
     plays = {}
+    # Initialize games player played against other players
+    for player in players:
+        plays[player] = set()
+
     current_game = []
     for match in matches:
+        # TODO: Expand for team games
         if game == match[2]:
             current_game.append(match[0])
-        # TODO: Build a dictionary of who played who
-        # Match everyone in the same game
-        if plays[match[0]]:
-            plays[match[0]].append(match)
+        else:
+            for player in current_game:
+                print(plays[player])
+                print(set(current_game))
+                plays[player] = plays[player].union(set(current_game))
+            game += 1
+            current_game = [match[0]]
     '''
     Create a graph with all players in current point total
 
