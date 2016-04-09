@@ -184,7 +184,7 @@ def swissPairings(tournament='default'):
         G.add_node(standing[0],
                    name=standing[1],
                    win=standing[2],
-                   matches=standings[3])
+                   matches=standing[3])
 
     game = 1  # Starting game
     # generate players
@@ -197,6 +197,7 @@ def swissPairings(tournament='default'):
         plays[player] = set()
 
     current_game = []
+    #create a graph of players who played to create a graph of players who have not played
     for match in matches:
         # TODO: Expand for team games
         if game == match[2]:
@@ -208,6 +209,8 @@ def swissPairings(tournament='default'):
                 plays[player] = plays[player].union(set(current_game))
             game += 1
             current_game = [match[0]]
+Fixed
+
     '''
     Create a graph with all players in current point total
 
