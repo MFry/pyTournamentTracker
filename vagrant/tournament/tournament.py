@@ -211,6 +211,7 @@ def swissPairings(tournament='default'):
             current_game = [match[0]]
 
 
+
     '''
     Create a graph with all players in current point total
 
