@@ -198,7 +198,7 @@ def swissPairings(tournament='default'):
         plays[player] = set()
 
     current_game = []
-    #create a graph of players who played to create a graph of players who have not played
+    # create a graph of players who played to create a graph of players who have not played
     for match in matches:
         # TODO: Expand for team games
         if game == match[2]:
@@ -209,7 +209,12 @@ def swissPairings(tournament='default'):
             game += 1
             current_game = [match[0]]
     # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
-
+    # Creates an undirected graph of players who have not played against each other
+    for player in plays:
+        not_played = players - set(plays[player]) - {player}
+        # print(not_played) returns {3}, {3,4}, {1,2},{2}
+        # print(list(zip([player] * len(not_played), not_played))) returns [(1, 3)], [(2, 3), (2, 4)], [(3, 1), (3, 2)], [(4, 2)]
+        G.add_edges_from(list(zip([player] * len(not_played), not_played)))
 
     '''
     Create a graph with all players in current point total
