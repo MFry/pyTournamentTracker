@@ -208,7 +208,7 @@ def swissPairings(tournament='default'):
                 plays[player] = plays[player].union(set(current_game)) - {player}
             game += 1
             current_game = [match[0]]
-    # plays returns : {1: {1, 2, 4}, 2: {1, 2}, 3: {3, 4}, 4: {1, 3, 4}}
+    # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
 
 
     '''
