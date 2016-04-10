@@ -185,7 +185,8 @@ def swissPairings(tournament='default'):
                    name=standing[1],
                    win=standing[2],
                    matches=standing[3])
-
+    # G.nodes() returns [1,2,3....]
+    # G.node[1] returns {'name': 'p1', 'matches': 2, 'win': 2}
     game = 1  # Starting game
     # generate players
     players = set()
