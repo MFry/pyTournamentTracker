@@ -214,7 +214,8 @@ def swissPairings(tournament='default'):
         not_played = players - set(plays[player]) - {player}
         # print(not_played) returns {3}, {3,4}, {1,2},{2}
         # print(list(zip([player] * len(not_played), not_played))) returns [(1, 3)], [(2, 3), (2, 4)], [(3, 1), (3, 2)], [(4, 2)]
-        G.add_edges_from(list(zip([player] * len(not_played), not_played)))
+        weights = list(map(lambda x: abs(G.node[x]['win']-G.node[player]['win']), not_played))
+        G.add_weighted_edges_from(list(zip([player] * len(not_played), not_played, weights)))
 
     '''
     Create a graph with all players in current point total
