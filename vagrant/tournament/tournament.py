@@ -213,7 +213,6 @@ def swissPairings(tournament='default'):
     matches = cur.fetchall()
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
 
-
     for standing in standings:
         G.add_node(standing[0],
                    name=standing[1],
@@ -239,18 +238,3 @@ def swissPairings(tournament='default'):
     for key in res:
         results.append((key, res[key]))
     return results
-
-#registerTournament('default')
-#print(getTournament('default'))
-#print(getTournament('tournament1'))
-print(playerStandings('tournament1'))
-#print(swissPairings('tournament1'))
-#print(playerStandings('tournament1'))
-#reportMatch({1:'True', 2:'False'}, tournament='tournament1')
-#registerPlayer('Steve Bobs')
-#registerPlayer('Michal Frystacky')
-#registerPlayer('Steve Davies')
-#registerPlayer('test3')
-#countPlayers()
-#deleteMatches(tournament='tournament1')
-#deleteMatches()
