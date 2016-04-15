@@ -178,7 +178,6 @@ def _generate_players_games_played(matches):
 
     # create a graph of players who played to create a graph of players who have not played
     for match in matches:
-        # TODO: Expand for team games
         if game == match[2]:
             current_game.append(match[0])
         else:
@@ -231,9 +230,10 @@ def swissPairings(tournament='default'):
         not_played = players - set(plays[player]) - {player}
         # print(not_played) returns {3}, {3,4}, {1,2},{2}
         # print(list(zip([player] * len(not_played), not_played))) returns [(1, 3)], [(2, 3), (2, 4)], [(3, 1), (3, 2)], [(4, 2)]
-        weights = list(map(lambda x: abs(G.node[x]['win']-G.node[player]['win']), not_played))
+        weights = list(map(lambda x: abs(G.node[x]['win']+G.node[player]['win']), not_played))
         G.add_weighted_edges_from(list(zip([player] * len(not_played), not_played, weights)))
 
+    nx.algorithms.max_weight_matching(G)
     '''
     Create a graph with all players in current point total
 
@@ -255,7 +255,8 @@ def swissPairings(tournament='default'):
 #registerTournament('default')
 #print(getTournament('default'))
 #print(getTournament('tournament1'))
-print(swissPairings('tournament1'))
+print(playerStandings('tournament1'))
+#print(swissPairings('tournament1'))
 #print(playerStandings('tournament1'))
 #reportMatch({1:'True', 2:'False'}, tournament='tournament1')
 #registerPlayer('Steve Bobs')
