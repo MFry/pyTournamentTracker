@@ -233,8 +233,12 @@ def swissPairings(tournament='default'):
         weights = list(map(lambda x: abs(G.node[x]['win']+G.node[player]['win']), not_played))
         G.add_weighted_edges_from(list(zip([player] * len(not_played), not_played, weights)))
 
-    nx.algorithms.max_weight_matching(G)
-
+    res = nx.algorithms.max_weight_matching(G)
+    # Convert into tuple pairs
+    results = []
+    for key in res:
+        results.append((key, res[key]))
+    return results
 
 #registerTournament('default')
 #print(getTournament('default'))
