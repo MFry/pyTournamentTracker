@@ -154,7 +154,41 @@ def reportMatch(players, tournament='default'):
                     (tournament_id, player, players[player], last_match+1))
     conn.commit()
     conn.close()
- 
+
+
+def _generate_players_games_played(matches):
+    """
+        Based on matches(games played history) this function will return a set containing all the players played and
+        a graph representation of who played who (dictionary of key value pairs where the key is the player and value
+        is whom they played against).
+    :param matches:
+    :return:
+    :rtype: tuple of set, dict
+    """
+    players = set()
+    for match in matches:
+        players.add(match[0])
+    plays = {}
+    # Initialize games player played against other players
+    for player in players:
+        plays[player] = set()
+
+    game = 1  # Starting game
+    current_game = []
+
+    # create a graph of players who played to create a graph of players who have not played
+    for match in matches:
+        # TODO: Expand for team games
+        if game == match[2]:
+            current_game.append(match[0])
+        else:
+            for player in current_game:
+                plays[player] = plays[player].union(set(current_game)) - {player}
+            game += 1
+            current_game = [match[0]]
+    return players, plays
+
+
 def swissPairings(tournament='default'):
     """Returns a list of pairs of players for the next round of a match.
   
@@ -179,7 +213,8 @@ def swissPairings(tournament='default'):
     cur.execute('SELECT player, winner, match FROM matches WHERE t_id = (%s);', (t_id,))
     matches = cur.fetchall()
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
-    # TODO: Implement strong-weak pairing matching problem
+
+
     for standing in standings:
         G.add_node(standing[0],
                    name=standing[1],
@@ -187,27 +222,9 @@ def swissPairings(tournament='default'):
                    matches=standing[3])
     # G.nodes() returns [1,2,3....]
     # G.node[1] returns {'name': 'p1', 'matches': 2, 'win': 2}
-    game = 1  # Starting game
-    # generate players
-    players = set()
-    for match in matches:
-        players.add(match[0])
-    plays = {}
-    # Initialize games player played against other players
-    for player in players:
-        plays[player] = set()
 
-    current_game = []
-    # create a graph of players who played to create a graph of players who have not played
-    for match in matches:
-        # TODO: Expand for team games
-        if game == match[2]:
-            current_game.append(match[0])
-        else:
-            for player in current_game:
-                plays[player] = plays[player].union(set(current_game)) - {player}
-            game += 1
-            current_game = [match[0]]
+    players, plays = _generate_players_games_played(matches)
+
     # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
     # Creates an undirected graph of players who have not played against each other
     for player in plays:
