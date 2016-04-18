@@ -50,8 +50,10 @@ def countPlayers():
     """
     conn = connect()
     cur = conn.cursor()
-    cur.execute('SELECT count(*) FROM view_tournament_size;')
+    cur.execute('SELECT sum(total_players) FROM view_tournament_size;')
     tournaments_player_count = cur.fetchone()
+    if not tournaments_player_count[0]:
+        return 0
     return int(tournaments_player_count[0])
 
 
@@ -98,7 +100,7 @@ def registerPlayer(name, tournament='default'):
     tournament_id = getTournament(tournament)
     if not tournament_id:
         tournament_id = registerTournament(tournament)
-    print(player_id, tournament_id)
+    #print(player_id, tournament_id)
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
     conn.commit()
     conn.close()
