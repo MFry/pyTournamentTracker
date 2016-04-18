@@ -49,25 +49,32 @@ CREATE TABLE matches (
 
 -- Gives stats, games won and games played, for each player in each tournament
 CREATE VIEW view_player_stats AS
-  SELECT matches.t_id,
-    matches.player,
-    view_players_tournaments.player_name,
+  SELECT
+    view_p_t.tournament_id,
+    view_p_t.player_id,
+    view_p_t.player_name,
     games_won,
-    count(matches.player) as games_played
-  FROM matches
-  JOIN
-    (SELECT t_id, player,
-          SUM(CASE WHEN winner THEN 1 ELSE 0 END) as games_won
-      -- COALESCE(SUM(CASE WHEN winner THEN 1 ELSE 0 END), 0) as games_won
-      FROM matches
-      GROUP BY t_id, player) AS player_wins
-    ON matches.t_id = player_wins.t_id
-    AND matches.player = player_wins.player
-  JOIN view_players_tournaments
-    ON matches.t_id = view_players_tournaments.tournament_id
-    AND matches.player = view_players_tournaments.player_id
-  GROUP BY matches.t_id, matches.player, view_players_tournaments.player_name, games_won
-  ORDER BY t_id, games_won DESC, games_played DESC;
+    COALESCE(count(matches.player), 0) AS games_played
+  FROM view_players_tournaments AS view_p_t
+    LEFT OUTER JOIN matches
+      ON view_p_t.tournament_id = matches.t_id
+         AND view_p_t.player_id = matches.player
+    LEFT OUTER JOIN
+    (SELECT
+       view_p_t.tournament_id       AS t_id,
+       view_p_t.player_id           AS player,
+       COALESCE(SUM(CASE WHEN winner
+         THEN 1
+                    ELSE 0 END), 0) AS games_won
+     FROM view_players_tournaments AS view_p_t
+       LEFT OUTER JOIN matches
+         ON view_p_t.tournament_id = matches.t_id
+            AND view_p_t.player_id = matches.player
+     GROUP BY view_p_t.tournament_id, view_p_t.player_id) AS player_wins
+      ON view_p_t.tournament_id = player_wins.t_id
+         AND view_p_t.player_id = player_wins.player
+  GROUP BY view_p_t.tournament_id, view_p_t.player_id, view_p_t.player_name, games_won
+  ORDER BY view_p_t.tournament_id, games_won DESC, games_played DESC;
 
 
 
