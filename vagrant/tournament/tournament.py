@@ -155,7 +155,40 @@ def reportMatch(players, tournament='default'):
                     (tournament_id, player, players[player], last_match+1))
     conn.commit()
     conn.close()
- 
+
+
+def _generate_players_games_played(matches):
+    """
+        Based on matches(games played history) this function will return a set containing all the players played and
+        a graph representation of who played who (dictionary of key value pairs where the key is the player and value
+        is whom they played against).
+    :param matches:
+    :return:
+    :rtype: tuple of set, dict
+    """
+    players = set()
+    for match in matches:
+        players.add(match[0])
+    plays = {}
+    # Initialize games player played against other players
+    for player in players:
+        plays[player] = set()
+
+    game = 1  # Starting game
+    current_game = []
+
+    # create a graph of players who played to create a graph of players who have not played
+    for match in matches:
+        if game == match[2]:
+            current_game.append(match[0])
+        else:
+            for player in current_game:
+                plays[player] = plays[player].union(set(current_game)) - {player}
+            game += 1
+            current_game = [match[0]]
+    return players, plays
+
+
 def swissPairings(tournament='default'):
     """Returns a list of pairs of players for the next round of a match.
   
@@ -180,7 +213,7 @@ def swissPairings(tournament='default'):
     cur.execute('SELECT player, winner, match FROM matches WHERE t_id = (%s);', (t_id,))
     matches = cur.fetchall()
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
-    # TODO: Implement strong-weak pairing matching problem
+
     for standing in standings:
         G.add_node(standing[0],
                    name=standing[1],
@@ -188,64 +221,21 @@ def swissPairings(tournament='default'):
                    matches=standing[3])
     # G.nodes() returns [1,2,3....]
     # G.node[1] returns {'name': 'p1', 'matches': 2, 'win': 2}
-    game = 1  # Starting game
-    # generate players
-    players = set()
-    for match in matches:
-        players.add(match[0])
-    plays = {}
-    # Initialize games player played against other players
-    for player in players:
-        plays[player] = set()
 
-    current_game = []
-    # create a graph of players who played to create a graph of players who have not played
-    for match in matches:
-        # TODO: Expand for team games
-        if game == match[2]:
-            current_game.append(match[0])
-        else:
-            for player in current_game:
-                plays[player] = plays[player].union(set(current_game)) - {player}
-            game += 1
-            current_game = [match[0]]
+    players, plays = _generate_players_games_played(matches)
+
     # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
     # Creates an undirected graph of players who have not played against each other
     for player in plays:
         not_played = players - set(plays[player]) - {player}
         # print(not_played) returns {3}, {3,4}, {1,2},{2}
         # print(list(zip([player] * len(not_played), not_played))) returns [(1, 3)], [(2, 3), (2, 4)], [(3, 1), (3, 2)], [(4, 2)]
-        weights = list(map(lambda x: abs(G.node[x]['win']-G.node[player]['win']), not_played))
+        weights = list(map(lambda x: abs(G.node[x]['win']+G.node[player]['win']), not_played))
         G.add_weighted_edges_from(list(zip([player] * len(not_played), not_played, weights)))
 
-    '''
-    Create a graph with all players in current point total
-
-    Connect players in the graph that have not played yet
-
-    Use a Blossom based algorithm to compute a maximal matching of the graph
-
-    Take any unpaired players and add them to the group with the next highest point total
-
-    Repeat until there is one or no players left
-    '''
-    '''
-    G = nx.Graph()
-    G.add_node(1, wins=10)
-    G.add_node(2, wins=5)
-    G.add_edge(1, 2)
-    '''
-
-#registerTournament('default')
-#print(getTournament('default'))
-#print(getTournament('tournament1'))
-print(swissPairings('tournament1'))
-#print(playerStandings('tournament1'))
-#reportMatch({1:'True', 2:'False'}, tournament='tournament1')
-#registerPlayer('Steve Bobs')
-#registerPlayer('Michal Frystacky')
-#registerPlayer('Steve Davies')
-#registerPlayer('test3')
-#countPlayers()
-#deleteMatches(tournament='tournament1')
-#deleteMatches()
+    res = nx.algorithms.max_weight_matching(G)
+    # Convert into tuple pairs
+    results = []
+    for key in res:
+        results.append((key, res[key]))
+    return results
