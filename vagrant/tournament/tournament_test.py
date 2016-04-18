@@ -55,6 +55,7 @@ def testStandingsBeforeMatches():
     registerPlayer("Randy Schwartz")
     standings = playerStandings()
     if len(standings) < 2:
+        #TODO: Implement default values for view_player_stats
         raise ValueError("Players should appear in playerStandings even before "
                          "they have played any matches.")
     elif len(standings) > 2:
