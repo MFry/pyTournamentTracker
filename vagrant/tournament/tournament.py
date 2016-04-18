@@ -27,6 +27,7 @@ def deleteMatches(tournament=None):
         cur.execute('DELETE FROM tournament_players WHERE tournament_id = (%s);', (tournament_id,))
         cur.execute('DELETE FROM matches WHERE t_id = (%s);', (tournament_id,))
     else:
+        cur.execute('DELETE FROM tournament_players;')
         cur.execute('DELETE FROM matches;')
     conn.commit()
     conn.close()
