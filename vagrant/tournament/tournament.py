@@ -22,9 +22,10 @@ def deleteMatches(tournament=None):
     conn = connect()
     cur = conn.cursor()
     if tournament:
-        cur.execute('SELECT id FROM tournaments where name = (%s);', (tournament,))
+        cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,))
         tournament_id = cur.fetchone()[0]
-        cur.execute('DELETE FROM matches WHERE t_id = (%s)', (tournament_id,))
+        cur.execute('DELETE FROM tournament_players WHERE tournament_id = (%s);', (tournament_id,))
+        cur.execute('DELETE FROM matches WHERE t_id = (%s);', (tournament_id,))
     else:
         cur.execute('DELETE FROM matches;')
     conn.commit()
