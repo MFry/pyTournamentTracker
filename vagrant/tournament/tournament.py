@@ -37,8 +37,8 @@ def deletePlayers():
     """Remove all the player records from the database."""
     conn = connect()
     cur = conn.cursor()
-    cur.execute('DELETE FROM players;')
     cur.execute('DELETE FROM tournament_players;')
+    cur.execute('DELETE FROM players;')
     cur.execute('DELETE FROM matches;')
     conn.commit()
     conn.close()
@@ -50,10 +50,9 @@ def countPlayers():
     """
     conn = connect()
     cur = conn.cursor()
-    cur.execute('SELECT tournament_name, total_players FROM view_tournament_size;')
-    tournaments_player_count = cur.fetchall()
-    print(tournaments_player_count)
-    return tournaments_player_count
+    cur.execute('SELECT count(*) FROM view_tournament_size;')
+    tournaments_player_count = cur.fetchone()
+    return int(tournaments_player_count[0])
 
 
 def registerTournament(tournament):
