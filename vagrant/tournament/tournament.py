@@ -24,10 +24,10 @@ def deleteMatches(tournament=None):
     if tournament:
         cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,))
         tournament_id = cur.fetchone()[0]
-        cur.execute('DELETE FROM tournament_players WHERE tournament_id = (%s);', (tournament_id,))
+        # cur.execute('DELETE FROM tournament_players WHERE tournament_id = (%s);', (tournament_id,))
         cur.execute('DELETE FROM matches WHERE t_id = (%s);', (tournament_id,))
     else:
-        cur.execute('DELETE FROM tournament_players;')
+        #cur.execute('DELETE FROM tournament_players;')
         cur.execute('DELETE FROM matches;')
     conn.commit()
     conn.close()
@@ -157,7 +157,7 @@ def reportMatch(players, tournament='default'):
         last_match = 0
     else:
         last_match += 1
-    print(last_match)
+    # print(last_match)
     for player in players:
         cur.execute('INSERT INTO matches (t_id, player, winner, match) VALUES (%s, %s, %s, %s);',
                     (tournament_id, player, players[player], last_match))
@@ -165,7 +165,7 @@ def reportMatch(players, tournament='default'):
     conn.close()
 
 
-def _generate_players_games_played(matches):
+def _generate_players_games_played(standings, matches):
     """
         Based on matches(games played history) this function will return a set containing all the players played and
         a graph representation of who played who (dictionary of key value pairs where the key is the player and value
@@ -197,6 +197,15 @@ def _generate_players_games_played(matches):
     return players, plays
 
 
+def _generate_match_history(tournament):
+    conn = connect()
+    cur = conn.cursor()
+    t_id = getTournament(tournament)
+    cur.execute('SELECT player, winner, match FROM matches WHERE t_id = (%s);', (t_id,))
+    matches = cur.fetchall()
+    conn.close()
+    return matches
+
 def swissPairings(tournament='default'):
     """Returns a list of pairs of players for the next round of a match.
   
@@ -215,11 +224,9 @@ def swissPairings(tournament='default'):
     G = nx.Graph()
     standings = playerStandings(tournament)
     # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
-    con = connect()
-    cur = con.cursor()
-    t_id = getTournament(tournament)
-    cur.execute('SELECT player, winner, match FROM matches WHERE t_id = (%s);', (t_id,))
-    matches = cur.fetchall()
+    matches = _generate_match_history(tournament)
+    print(matches)
+    # matches should return (player_id, winner, match)
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
 
     for standing in standings:
@@ -230,7 +237,7 @@ def swissPairings(tournament='default'):
     # G.nodes() returns [1,2,3....]
     # G.node[1] returns {'name': 'p1', 'matches': 2, 'win': 2}
 
-    players, plays = _generate_players_games_played(matches)
+    players, plays = _generate_players_games_played(standings, matches)
 
     # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
     # Creates an undirected graph of players who have not played against each other

@@ -107,7 +107,8 @@ def testReportMatches():
             raise ValueError("After deleting matches, players should have zero matches recorded.")
         if w != 0:
             raise ValueError("After deleting matches, players should have zero wins recorded.")
-    print("8. After match deletion, player standings are properly reset.\n9. Matches are properly deleted.")
+    print("8. After match deletion, player standings are properly reset.\n"
+          "9. Matches are properly deleted.")
 
 
 def testPairings():
@@ -126,14 +127,15 @@ def testPairings():
     registerPlayer("Princess Luna")
     standings = playerStandings()
     [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
+    print(standings)
     pairings = swissPairings()
     if len(pairings) != 4:
         raise ValueError(
             "For eight players, swissPairings should return 4 pairs. Got {pairs}".format(pairs=len(pairings)))
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
-    reportMatch(id5, id6)
-    reportMatch(id7, id8)
+    reportMatch({id1: True, id2: False})
+    reportMatch({id3: True, id4: False})
+    reportMatch({id5: True, id6: False})
+    reportMatch({id7: True, id8: False})
     pairings = swissPairings()
     if len(pairings) != 4:
         raise ValueError(
