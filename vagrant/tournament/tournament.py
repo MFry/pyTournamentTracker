@@ -172,6 +172,9 @@ def _generate_players_games_played(standings, matches):
         is whom they played against).
     :param matches:
     :return:
+        Sample return:
+            players : {1,2,3, ...}
+            plays returns : {1: {2, 4}, 2: {1}, ...}
     :rtype: tuple of set, dict
     """
     players = set()
@@ -198,6 +201,15 @@ def _generate_players_games_played(standings, matches):
 
 
 def _generate_match_history(tournament):
+    """
+
+    :param tournament:
+    :return:
+        Sample return: [(1, True, 1), (2, False, 1), ...] where
+            first index: player_id
+            second index: whether the player won during
+            third index: the match
+    """
     conn = connect()
     cur = conn.cursor()
     t_id = getTournament(tournament)
