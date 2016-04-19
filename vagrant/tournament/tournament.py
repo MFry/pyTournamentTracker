@@ -226,6 +226,7 @@ def swissPairings(tournament='default'):
     # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
     matches = _generate_match_history(tournament)
     print(matches)
+    # TODO : Handle case when match history is empty
     # matches should return (player_id, winner, match)
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
 
