@@ -50,8 +50,8 @@ CREATE TABLE matches (
 -- Gives stats, games won and games played, for each player in each tournament
 CREATE VIEW view_player_stats AS
   SELECT
-    view_p_t.tournament_id,
-    view_p_t.player_id,
+    view_p_t.tournament_id             AS t_id,
+    view_p_t.player_id                 AS p_id,
     view_p_t.player_name,
     games_won,
     COALESCE(count(matches.player), 0) AS games_played
