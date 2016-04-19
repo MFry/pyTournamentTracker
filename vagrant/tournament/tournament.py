@@ -100,7 +100,7 @@ def registerPlayer(name, tournament='default'):
     tournament_id = getTournament(tournament)
     if not tournament_id:
         tournament_id = registerTournament(tournament)
-    #print(player_id, tournament_id)
+    # print(player_id, tournament_id)
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
     conn.commit()
     conn.close()
@@ -127,11 +127,13 @@ def playerStandings(tournament='default'):
     tournament_id = getTournament(tournament)
     if not tournament_id:
         return None
-    cur.execute('SELECT player, player_name, games_won, games_played FROM view_player_stats WHERE t_id = %s ORDER BY games_won DESC, games_played DESC;',
-                (tournament_id,))
+    cur.execute(
+        'SELECT p_id, player_name, games_won, games_played FROM view_player_stats WHERE t_id = %s ORDER BY games_won DESC, games_played DESC;',
+        (tournament_id,))
     standings = cur.fetchall()
     conn.close()
     return standings
+
 
 def reportMatch(players, tournament='default'):
     """
@@ -151,10 +153,14 @@ def reportMatch(players, tournament='default'):
     tournament_id = getTournament(tournament)
     cur.execute('SELECT max(match) as last_match FROM matches WHERE t_id = %s;', (tournament_id,))
     last_match = cur.fetchone()[0]
+    if not last_match:
+        last_match = 0
+    else:
+        last_match += 1
     print(last_match)
     for player in players:
         cur.execute('INSERT INTO matches (t_id, player, winner, match) VALUES (%s, %s, %s, %s);',
-                    (tournament_id, player, players[player], last_match+1))
+                    (tournament_id, player, players[player], last_match))
     conn.commit()
     conn.close()
 
