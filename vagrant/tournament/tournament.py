@@ -148,12 +148,9 @@ def reportMatch(players, tournament='default'):
     conn = connect()
     cur = conn.cursor()
     tournament_id = getTournament(tournament)
-    cur.execute('SELECT max(match) as last_match FROM matches WHERE t_id = %s;', (tournament_id,))
+    cur.execute('SELECT COALESCE(max(match),0) as last_match FROM matches WHERE t_id = %s;', (tournament_id,))
     last_match = cur.fetchone()[0]
-    if not last_match:
-        last_match = 0
-    else:
-        last_match += 1
+    last_match += 1
     # print(last_match)
     for player in players:
         cur.execute('INSERT INTO matches (t_id, player, winner, match) VALUES (%s, %s, %s, %s);',
