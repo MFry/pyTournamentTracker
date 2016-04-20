@@ -64,8 +64,7 @@ CREATE VIEW view_player_stats AS
        view_p_t.tournament_id       AS t_id,
        view_p_t.player_id           AS player,
        COALESCE(SUM(CASE WHEN winner
-         THEN 1
-                    ELSE 0 END), 0) AS games_won
+         THEN 1 ELSE 0 END), 0) AS games_won
      FROM view_players_tournaments AS view_p_t
        LEFT OUTER JOIN matches
          ON view_p_t.tournament_id = matches.t_id

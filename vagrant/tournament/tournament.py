@@ -114,14 +114,11 @@ def playerStandings(tournament='default'):
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
-        t_id: The tournament in which the player's participating in
-        id: the player's unique id (assigned by the database)
+        p_id: the player's unique id (assigned by the database)
         name: the player's full name (as registered)
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-
-    # TODO: Figure out if tournament is even necessary
     conn = connect()
     cur = conn.cursor()
     tournament_id = getTournament(tournament)
@@ -178,8 +175,8 @@ def _generate_players_games_played(standings, matches):
     :rtype: tuple of set, dict
     """
     players = set()
-    for match in matches:
-        players.add(match[0])
+    for player_stats in standings:
+        players.add(player_stats[0])
     plays = {}
     # Initialize games player played against other players
     for player in players:
@@ -237,7 +234,6 @@ def swissPairings(tournament='default'):
     standings = playerStandings(tournament)
     # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
     matches = _generate_match_history(tournament)
-    print(matches)
     # TODO : Handle case when match history is empty
     # matches should return (player_id, winner, match)
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
@@ -249,12 +245,13 @@ def swissPairings(tournament='default'):
                    matches=standing[3])
     # G.nodes() returns [1,2,3....]
     # G.node[1] returns {'name': 'p1', 'matches': 2, 'win': 2}
-
+    # print(standings)
+    # print(matches)
     players, plays = _generate_players_games_played(standings, matches)
 
     # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
     # Creates an undirected graph of players who have not played against each other
-    for player in plays:
+    for player in players:
         not_played = players - set(plays[player]) - {player}
         # print(not_played) returns {3}, {3,4}, {1,2},{2}
         # print(list(zip([player] * len(not_played), not_played))) returns [(1, 3)], [(2, 3), (2, 4)], [(3, 1), (3, 2)], [(4, 2)]
@@ -262,8 +259,11 @@ def swissPairings(tournament='default'):
         G.add_weighted_edges_from(list(zip([player] * len(not_played), not_played, weights)))
 
     res = nx.algorithms.max_weight_matching(G)
+    # remove duplicates
+
     # Convert into tuple pairs
     results = []
     for key in res:
         results.append((key, res[key]))
+    print(results)
     return results
