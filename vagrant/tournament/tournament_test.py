@@ -127,11 +127,10 @@ def testPairings():
     registerPlayer("Princess Luna")
     standings = playerStandings()
     [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
-    print(standings)
     pairings = swissPairings()
     if len(pairings) != 4:
         raise ValueError(
-            "For eight players, swissPairings should return 4 pairs. Got {pairs}".format(pairs=len(pairings)))
+            "P1 Test: For eight players, swissPairings should return 4 pairs. Got {pairs}".format(pairs=len(pairings)))
     reportMatch({id1: True, id2: False})
     reportMatch({id3: True, id4: False})
     reportMatch({id5: True, id6: False})
@@ -139,7 +138,7 @@ def testPairings():
     pairings = swissPairings()
     if len(pairings) != 4:
         raise ValueError(
-            "For eight players, swissPairings should return 4 pairs. Got {pairs}".format(pairs=len(pairings)))
+            "P2 Test: For eight players, swissPairings should return 4 pairs. Got {pairs}".format(pairs=len(pairings)))
     [(pid1, pname1, pid2, pname2), (pid3, pname3, pid4, pname4), (pid5, pname5, pid6, pname6),
      (pid7, pname7, pid8, pname8)] = pairings
     possible_pairs = set([frozenset([id1, id3]), frozenset([id1, id5]),
