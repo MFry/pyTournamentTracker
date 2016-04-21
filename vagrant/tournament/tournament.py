@@ -172,12 +172,11 @@ def _generate_players_games_played(standings, matches):
     :rtype: tuple of set, dict
     """
     players = set()
-    for player_stats in standings:
-        players.add(player_stats[0])
     plays = {}
     # Initialize games player played against other players
-    for player in players:
-        plays[player] = set()
+    for player_stats in standings:
+        players.add(player_stats[0])
+        plays[player_stats[0]] = set()
 
     game = 1  # Starting game
     current_game = []
