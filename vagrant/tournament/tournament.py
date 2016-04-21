@@ -199,15 +199,16 @@ def _generate_match_history(tournament):
 
     :param tournament:
     :return:
-        Sample return: [(1, True, 1), (2, False, 1), ...] where
-            first index: player_id
-            second index: whether the player won during
-            third index: the match
+        Sample return: [('2,5',..), ('4,6',), ('1,3',)] where
+            where each tuple returns everyone that played during the specific match
     """
     conn = connect()
     cur = conn.cursor()
     t_id = getTournament(tournament)
-    cur.execute('SELECT player, winner, match FROM matches WHERE t_id = (%s);', (t_id,))
+    cur.execute('''SELECT array_to_string(array_agg(DISTINCT player),',') as players_in_game
+                       FROM matches
+                       WHERE t_id = (%s)
+                       GROUP BY matches.match;''', (t_id,))
     matches = cur.fetchall()
     conn.close()
     return matches
@@ -231,6 +232,7 @@ def swissPairings(tournament='default'):
     standings = playerStandings(tournament)
     # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
     matches = _generate_match_history(tournament)
+    print('matches: ', matches)
     # TODO : Handle case when match history is empty
     # matches should return (player_id, winner, match)
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
@@ -245,7 +247,7 @@ def swissPairings(tournament='default'):
     # print(standings)
     # print(matches)
     players, plays = _generate_players_games_played(standings, matches)
-
+    print('plays: ', plays)
     # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
     # Creates an undirected graph of players who have not played against each other
     for player in players:
@@ -268,3 +270,23 @@ def swissPairings(tournament='default'):
         results.append((key, res[key]))
     print('Swiss return:', results)
     return results
+
+
+registerPlayer("Twilight Sparkle")
+registerPlayer("Fluttershy")
+registerPlayer("Applejack")
+registerPlayer("Pinkie Pie")
+registerPlayer("Rarity")
+registerPlayer("Rainbow Dash")
+registerPlayer("Princess Celestia")
+registerPlayer("Princess Luna")
+tournament = 'default'
+standings = playerStandings()
+[id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
+reportMatch({id1: True, id2: False})
+reportMatch({id3: True, id4: False})
+reportMatch({id5: True, id6: False})
+print(_generate_match_history(tournament))
+reportMatch({id7: True, id8: False})
+print('standings: ', standings)
+print(swissPairings())
