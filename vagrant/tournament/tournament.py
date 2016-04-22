@@ -182,14 +182,12 @@ def _generate_players_games_played(standings, matches):
     current_game = []
 
     # create a graph of players who played to create a graph of players who have not played
+    # create a graph of players who played to create a graph of players who have not played
     for match in matches:
-        if game == match[2]:
-            current_game.append(match[0])
-        else:
-            for player in current_game:
-                plays[player] = plays[player].union(set(current_game)) - {player}
-            game += 1
-            current_game = [match[0]]
+        match = [int(i) for i in match[0].split( ',')]
+        match = set(match)
+        for player in match:
+            plays[player] = plays[player].union(set(match)) - {player}
     return players, plays
 
 
