@@ -241,21 +241,17 @@ def swissPairings(tournament='default'):
                    matches=standing[3])
     # G.nodes() returns [1,2,3....]
     # G.node[1] returns {'name': 'p1', 'matches': 2, 'win': 2}
-    # print(standings)
-    # print(matches)
     players, plays = _generate_players_games_played(standings, matches)
-    print('plays: ', plays)
     # plays returns : {1: {2, 4}, 2: {1}, 3: {4}, 4: {1, 3}}
     # Creates an undirected graph of players who have not played against each other
     for player in players:
         not_played = players - set(plays[player]) - {player}
         # print(not_played) returns {3}, {3,4}, {1,2},{2}
         # print(list(zip([player] * len(not_played), not_played))) returns [(1, 3)], [(2, 3), (2, 4)], [(3, 1), (3, 2)], [(4, 2)]
-        weights = list(map(lambda x: abs(G.node[x]['win']+G.node[player]['win']), not_played))
+        weights = list(map(lambda x: abs(G.node[x]['win']+G.node[player]['win'] + 1), not_played))
         G.add_weighted_edges_from(list(zip([player] * len(not_played), not_played, weights)))
 
     res = nx.algorithms.max_weight_matching(G)
-    print('Non-Formatted: ', res)
     # remove duplicates
     keys = res.keys()
     for key in list(keys):
@@ -265,25 +261,5 @@ def swissPairings(tournament='default'):
     results = []
     for key in res:
         results.append((key, res[key]))
-    print('Swiss return:', results)
     return results
 
-
-registerPlayer("Twilight Sparkle")
-registerPlayer("Fluttershy")
-registerPlayer("Applejack")
-registerPlayer("Pinkie Pie")
-registerPlayer("Rarity")
-registerPlayer("Rainbow Dash")
-registerPlayer("Princess Celestia")
-registerPlayer("Princess Luna")
-tournament = 'default'
-standings = playerStandings()
-[id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
-reportMatch({id1: True, id2: False})
-reportMatch({id3: True, id4: False})
-reportMatch({id5: True, id6: False})
-print(_generate_match_history(tournament))
-reportMatch({id7: True, id8: False})
-print('standings: ', standings)
-print(swissPairings())
