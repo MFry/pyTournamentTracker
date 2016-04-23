@@ -229,7 +229,6 @@ def swissPairings(tournament='default'):
     standings = playerStandings(tournament)
     # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
     matches = _generate_match_history(tournament)
-    print('matches: ', matches)
     # TODO : Handle case when match history is empty
     # matches should return (player_id, winner, match)
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
@@ -258,8 +257,9 @@ def swissPairings(tournament='default'):
         if key in res:
             del res[res[key]]
     # Convert into tuple pairs
-    results = []
-    for key in res:
-        results.append((key, res[key]))
+    names = {tup[0]:tup[1] for tup in standings}
+
+    results = [(key, names[key], res[key], names[res[key]]) for key in res]
+
     return results
 

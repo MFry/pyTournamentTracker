@@ -77,37 +77,3 @@ CREATE VIEW view_player_stats AS
 
 
 
-
-INSERT INTO tournaments VALUES('tournament1');
-INSERT INTO tournaments VALUES('tournament2');
-INSERT INTO players VALUES('p1');
-INSERT INTO players VALUES('p2');
-INSERT INTO players VALUES('p3');
-INSERT INTO players VALUES('p4');
-INSERT INTO players VALUES('p5');
-INSERT INTO players VALUES('p6');
-INSERT INTO tournament_players VALUES(1, 1);
-INSERT INTO tournament_players VALUES(2, 1);
-INSERT INTO tournament_players VALUES(3, 1);
-INSERT INTO tournament_players VALUES(4, 1);
-INSERT INTO tournament_players VALUES(5, 2);
-INSERT INTO tournament_players VALUES(6, 2);
-INSERT INTO tournament_players VALUES(1, 2);
-INSERT INTO matches VALUES (1, 1, True, 1);
-INSERT INTO matches VALUES (1, 2, False, 1);
-INSERT INTO matches VALUES (1, 3, FALSE, 2);
-INSERT INTO matches VALUES (1, 4, TRUE, 2);
-INSERT INTO matches VALUES (1, 1, TRUE, 3);
-INSERT INTO matches VALUES (1, 4, FALSE, 3);
-INSERT INTO matches VALUES (1, 2, FALSE, 4);
-INSERT INTO matches VALUES (1, 3, TRUE, 4);
--- Nonsensical matches
--- INSERT INTO tournament_stats VALUES (1, 1, FALSE, 5);
--- INSERT INTO tournament_stats VALUES (1, 3, FALSE, 5);
---T2
-INSERT INTO matches VALUES (2, 5, TRUE, 1);
-INSERT INTO matches VALUES (2, 6, FALSE, 1);
-INSERT INTO matches VALUES (2, 1, TRUE, 2);
-INSERT INTO matches VALUES (2, 1, TRUE, 3);
-INSERT INTO matches VALUES (2, 5, FALSE, 4);
-
