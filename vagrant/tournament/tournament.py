@@ -74,6 +74,7 @@ def countPlayers():
     if not tournaments_player_count[0]:
         return 0
     return int(tournaments_player_count[0])
+    conn.close()
 
 
 def registerTournament(tournament):
