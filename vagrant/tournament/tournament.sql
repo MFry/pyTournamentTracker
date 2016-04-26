@@ -41,10 +41,10 @@ CREATE VIEW view_tournament_size AS
 -- Stores the matches for each tournament
 -- One row per one player that participated in a match in a tournament
 CREATE TABLE matches (
-  t_id     INTEGER REFERENCES tournaments(id)   NOT NULL,
-  player   INTEGER REFERENCES players(id)       NOT NULL,
-  winner   BOOLEAN                              NOT NULL,
-  match    INTEGER                              NOT NULL,
+  t_id   INTEGER REFERENCES tournament_players (player_id)           NOT NULL,
+  player INTEGER REFERENCES tournament_players (tournament_id)       NOT NULL,
+  winner BOOLEAN                                                     NOT NULL,
+  match  INTEGER                                                     NOT NULL,
   PRIMARY KEY (t_id, player, winner, match));
 
 -- Gives stats, games won and games played, for each player in each tournament
