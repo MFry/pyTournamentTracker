@@ -55,6 +55,7 @@ def deleteTournament(tournament=None):
         cur.execute('DELETE FROM tournament_players WHERE tournament_id = %s;', (t_id,))
         cur.execute('DELETE FROM matches WHERE tournament_id = %s;', (t_id,))
         cur.execute('DELETE FROM tournament WHERE tournament_id = %s LIMIT 1;', (t_id,))
+        # http://stackoverflow.com/questions/5170546/how-do-i-delete-a-fixed-number-of-rows-with-sorting-in-postgresql
     else:
         cur.execute('DELETE FROM tournament_players;')
         cur.execute('DELETE FROM matches;')
@@ -168,12 +169,12 @@ def reportMatch(players, tournament='default'):
     conn = connect()
     cur = conn.cursor()
     tournament_id = getTournament(tournament)
-    cur.execute('SELECT COALESCE(max(match),0) as last_match FROM matches WHERE t_id = %s;', (tournament_id,))
+    cur.execute('SELECT COALESCE(max(match),0) as last_match FROM matches WHERE tournament_id = %s;', (tournament_id,))
     last_match = cur.fetchone()[0]
     last_match += 1
     # print(last_match)
     for player in players:
-        cur.execute('INSERT INTO matches (t_id, player, winner, match) VALUES (%s, %s, %s, %s);',
+        cur.execute('INSERT INTO matches (tournament_id, player, winner, match) VALUES (%s, %s, %s, %s);',
                     (tournament_id, player, players[player], last_match))
     conn.commit()
     conn.close()
@@ -224,7 +225,7 @@ def _generate_match_history(tournament):
     t_id = getTournament(tournament)
     cur.execute('''SELECT array_to_string(array_agg(DISTINCT player),',') as players_in_game
                        FROM matches
-                       WHERE t_id = (%s)
+                       WHERE tournament_id = (%s)
                        GROUP BY matches.match;''', (t_id,))
     matches = cur.fetchall()
     conn.close()

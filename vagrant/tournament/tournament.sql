@@ -41,11 +41,12 @@ CREATE VIEW view_tournament_size AS
 -- Stores the matches for each tournament
 -- One row per one player that participated in a match in a tournament
 CREATE TABLE matches (
-  t_id   INTEGER REFERENCES tournament_players (player_id)           NOT NULL,
-  player INTEGER REFERENCES tournament_players (tournament_id)       NOT NULL,
-  winner BOOLEAN                                                     NOT NULL,
-  match  INTEGER                                                     NOT NULL,
-  PRIMARY KEY (t_id, player, winner, match));
+  tournament_id INTEGER REFERENCES tournaments (id)           NOT NULL,
+  player        INTEGER REFERENCES players (id)               NOT NULL,
+  winner        BOOLEAN                                       NOT NULL,
+  match         INTEGER                                       NOT NULL,
+  PRIMARY KEY (tournament_id, player, winner, match)
+);
 
 -- Gives stats, games won and games played, for each player in each tournament
 CREATE VIEW view_player_stats AS
@@ -57,7 +58,7 @@ CREATE VIEW view_player_stats AS
     COALESCE(count(matches.player), 0) AS games_played
   FROM view_players_tournaments AS view_p_t
     LEFT OUTER JOIN matches
-      ON view_p_t.tournament_id = matches.t_id
+      ON view_p_t.tournament_id = matches.tournament_id
          AND view_p_t.player_id = matches.player
     LEFT OUTER JOIN
     (SELECT
@@ -67,7 +68,7 @@ CREATE VIEW view_player_stats AS
          THEN 1 ELSE 0 END), 0) AS games_won
      FROM view_players_tournaments AS view_p_t
        LEFT OUTER JOIN matches
-         ON view_p_t.tournament_id = matches.t_id
+         ON view_p_t.tournament_id = matches.tournament_id
             AND view_p_t.player_id = matches.player
      GROUP BY view_p_t.tournament_id, view_p_t.player_id) AS player_wins
       ON view_p_t.tournament_id = player_wins.t_id
