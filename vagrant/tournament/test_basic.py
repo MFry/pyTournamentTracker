@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+"""
+# Test cases for tournament.py
+# These tests are not exhaustive, but they should cover the majority of cases.
+"""
+# If you do add any of the extra credit options, be sure to add/modify these test cases
+# as appropriate to account for your module's added functionality.
 import unittest
 from tournament import *
 
@@ -12,7 +19,12 @@ class TestTournament(unittest.TestCase):
         deleteMatches()
         deletePlayers()
 
-    def test_count(self):
+    def test_registration_and_count(self):
+        """
+        Test for initial player count,
+                 player count after 1 and 2 players registered,
+                 player count after players deleted.
+        """
         c = countPlayers()
         self.assertTrue(c == 0, 'countPlayers should return numeric zero')
         registerPlayer("Chandra Nalaar")
@@ -25,7 +37,11 @@ class TestTournament(unittest.TestCase):
         c = countPlayers()
         self.assertTrue(c == 0, 'countPlayers should return numeric zero, but returned {}'.format(c))
 
-    def testStandingsBeforeMatches(self):
+    def test_standings_before_matches(self):
+        """
+        Test to ensure players are properly represented in standings prior
+        to any matches being reported.
+        """
         registerPlayer("Melpomene Murray")
         registerPlayer("Randy Schwartz")
         standings = playerStandings()
@@ -38,8 +54,11 @@ class TestTournament(unittest.TestCase):
         self.assertFalse(set([name1, name2]) != set(["Melpomene Murray", "Randy Schwartz"]), "Registered players' names should appear in standings, "
                          "even if they have no matches played.")
 
-
-    def test_reportMatches(self):
+    def test_report_matches(self):
+        """
+        Test that matches are reported properly.
+        Test to confirm matches are deleted properly.
+        """
         registerPlayer("Bruno Walton")
         registerPlayer("Boots O'Neal")
         registerPlayer("Cathy Burton")
@@ -63,7 +82,10 @@ class TestTournament(unittest.TestCase):
                 self.assertFalse(m != 0, "After deleting matches, players should have zero matches recorded.")
                 self.assertFalse(w != 0, "After deleting matches, players should have zero wins recorded.")
 
-    def test_pairing(self):
+    def test_swiss_pairing(self):
+        """
+        Test that pairings are generated properly both before and after match reporting.
+        """
         registerPlayer("Twilight Sparkle")
         registerPlayer("Fluttershy")
         registerPlayer("Applejack")
