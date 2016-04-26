@@ -29,13 +29,29 @@ class TestTournament(unittest.TestCase):
         self.assertTrue(c == 0, 'countPlayers should return numeric zero')
         registerPlayer("Chandra Nalaar")
         c = countPlayers()
-        self.assertTrue(c == 1, 'countPlayers should return 1, but returned {}'.format(c))
+        self.assertTrue(c == 1, 'countPlayers should return 1, but returned')
         registerPlayer("Jace Beleren")
         c = countPlayers()
-        self.assertTrue(c == 2, 'countPlayers should return 2, but returned {}'.format(c))
+        self.assertTrue(c == 2, 'countPlayers should return 2, but returned')
         deletePlayers()
         c = countPlayers()
-        self.assertTrue(c == 0, 'countPlayers should return numeric zero, but returned {}'.format(c))
+        self.assertTrue(c == 0, 'countPlayers should return numeric zero')
+
+    def test_multi_tournament_registration_count_delete(self):
+
+        registerPlayer('awesome person', tournament='t1')
+        registerPlayer('terminator', tournament='t1')
+        registerPlayer('arnold S')
+        registerPlayer('lonely', tournament='t2')
+        registerPlayer('not lonely', tournament='t2')
+        c = countPlayers()
+        self.assertFalse(c != 5, 'countPlayers should return 5 from across 3 tournaments')
+        deleteTournament(tournament='t1')
+        c = countPlayers()
+        self.assertFalse(c != 3, 'countPlayers should return 3 from across 2 tournaments')
+
+    def test_get_tournament(self):
+        pass
 
     def test_standings_before_matches(self):
         """
