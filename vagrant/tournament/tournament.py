@@ -10,15 +10,18 @@ import networkx as nx
 
 def connect():
     """
-
+        Establishes a connection to the tournament database
     :rtype: psycopg2.connection
-    :return:
+    :return: psycop2g connection object to the tournament database
     """
     return psycopg2.connect("dbname=tournament")
 
 
 def deleteMatches(tournament=None):
-    """Remove all the match records from the database."""
+    """
+        Remove all the match records from the database unless a tournament is chosen then it
+        removes matches history specifically from that tournament
+    """
     conn = connect()
     cur = conn.cursor()
     if tournament:
@@ -34,12 +37,28 @@ def deleteMatches(tournament=None):
 
 
 def deletePlayers():
-    """Remove all the player records from the database."""
+    """Remove all the players and their match records from the database."""
     conn = connect()
     cur = conn.cursor()
     cur.execute('DELETE FROM tournament_players;')
     cur.execute('DELETE FROM players;')
     cur.execute('DELETE FROM matches;')
+    conn.commit()
+    conn.close()
+
+
+def deleteTournament(tournament=None):
+    conn = connect()
+    cur = conn.cursor()
+    t_id = getTournament(tournament)
+    if t_id:
+        cur.execute('DELETE FROM tournament_players WHERE tournament_id = %s;', (t_id,))
+        cur.execute('DELETE FROM matches WHERE tournament_id = %s;', (t_id,))
+        cur.execute('DELETE FROM tournament WHERE tournament_id = %s LIMIT 1;', (t_id,))
+    else:
+        cur.execute('DELETE FROM tournament_players;')
+        cur.execute('DELETE FROM matches;')
+        cur.execute('DELETE FROM tournament;')
     conn.commit()
     conn.close()
 
