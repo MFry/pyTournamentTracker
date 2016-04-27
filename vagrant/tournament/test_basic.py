@@ -45,13 +45,19 @@ class TestTournament(unittest.TestCase):
         registerPlayer('lonely', tournament='t2')
         registerPlayer('not lonely', tournament='t2')
         c = countRegisteredPlayers()
-        self.assertFalse(c != 5, 'countPlayers should return 5 from across 3 tournaments')
+        c2 = countPlayers()
+        self.assertFalse(c != 5, 'countRegisteredPlayers should return 5 from across 3 tournaments')
+        self.assertFalse(c2 != c, 'countPlayers should return 5 got instead {}'.format(c2))
         deleteTournament(tournament='t1')
         c = countRegisteredPlayers()
-        self.assertFalse(c != 3, 'countPlayers should return 3 from across 2 tournaments')
+        c2 = countPlayers()
+        self.assertFalse(c != 3, 'countRegisteredPlayers should return 3 from across 2 tournaments')
+        self.assertFalse(c2 != 5, 'countPlayers should return 5 got instead {}'.format(c2))
         deleteTournament(tournament='t2')
         c = countRegisteredPlayers()
-        self.assertFalse(c != 1, 'countPlayers should return 1 from across default tournament')
+        c2 = countPlayers()
+        self.assertFalse(c != 1, 'countRegisteredPlayers should return 1 from across default tournament')
+        self.assertFalse(c2 != 5, 'countPlayers should return 5 got instead {}'.format(c2))
 
     def test_get_tournament(self):
         pass
