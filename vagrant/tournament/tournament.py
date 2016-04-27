@@ -68,6 +68,7 @@ def deleteTournament(tournament=None):
     conn.commit()
     conn.close()
 
+
 def countPlayers():
     """
         Returns the number of all players currently registered.
@@ -108,19 +109,6 @@ def registerTournament(tournament):
     return tournament_id
 
 
-def getTournament(tournament):
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('SELECT id FROM tournaments WHERE name = %s;', (tournament,))  # TODO: Check the logic on this
-    val = cur.fetchone()
-    if val:
-        tournament_id = val[0]
-    else:
-        tournament_id = val
-    conn.close()
-    return tournament_id
-
-
 def registerPlayer(name, tournament='default'):
     """Adds a player to the tournament database.
 
@@ -145,6 +133,32 @@ def registerPlayer(name, tournament='default'):
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
     conn.commit()
     conn.close()
+
+
+def getTournament(tournament):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute('SELECT id FROM tournaments WHERE name = %s LIMIT 1;', (tournament,))
+    val = cur.fetchone()
+    if val:
+        tournament_id = val[0]
+    else:
+        tournament_id = val
+    conn.close()
+    return tournament_id
+
+
+def getPlayer(player):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute('SELECT id FROM players WHERE name = %s LIMIT 1;', (player,))
+    val = cur.fetchone()
+    if val:
+        player_id = val[0]
+    else:
+        player_id = val
+    conn.close()
+    return player_id
 
 
 def playerStandings(tournament='default'):
