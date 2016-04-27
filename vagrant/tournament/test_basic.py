@@ -26,16 +26,16 @@ class TestTournament(unittest.TestCase):
                  player count after players deleted.
         """
         c = countPlayers()
-        self.assertTrue(c == 0, 'countPlayers should return numeric zero')
+        self.assertTrue(c == 0, 'countPlayers should return numeric zero, but returned {}'.format(c))
         registerPlayer("Chandra Nalaar")
         c = countPlayers()
-        self.assertTrue(c == 1, 'countPlayers should return 1, but returned')
+        self.assertTrue(c == 1, 'countPlayers should return 1, but returned {}'.format(c))
         registerPlayer("Jace Beleren")
         c = countPlayers()
-        self.assertTrue(c == 2, 'countPlayers should return 2, but returned')
+        self.assertTrue(c == 2, 'countPlayers should return 2, but returned {}'.format(c))
         deletePlayers()
         c = countPlayers()
-        self.assertTrue(c == 0, 'countPlayers should return numeric zero')
+        self.assertTrue(c == 0, 'countPlayers should return numeric zero, but returned {}'.format(c))
 
     def test_multi_tournament_registration_count_delete(self):
         # TODO: Register current players for additional tournaments
