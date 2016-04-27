@@ -38,17 +38,20 @@ class TestTournament(unittest.TestCase):
         self.assertTrue(c == 0, 'countPlayers should return numeric zero')
 
     def test_multi_tournament_registration_count_delete(self):
-
+        # TODO: Register current players for additional tournaments
         registerPlayer('awesome person', tournament='t1')
         registerPlayer('terminator', tournament='t1')
         registerPlayer('arnold S')
         registerPlayer('lonely', tournament='t2')
         registerPlayer('not lonely', tournament='t2')
-        c = countPlayers()
+        c = countRegisteredPlayers()
         self.assertFalse(c != 5, 'countPlayers should return 5 from across 3 tournaments')
         deleteTournament(tournament='t1')
-        c = countPlayers()
+        c = countRegisteredPlayers()
         self.assertFalse(c != 3, 'countPlayers should return 3 from across 2 tournaments')
+        deleteTournament(tournament='t2')
+        c = countRegisteredPlayers()
+        self.assertFalse(c != 1, 'countPlayers should return 1 from across default tournament')
 
     def test_get_tournament(self):
         pass

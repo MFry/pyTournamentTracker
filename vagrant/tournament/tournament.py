@@ -54,7 +54,12 @@ def deleteTournament(tournament=None):
     if t_id:
         cur.execute('DELETE FROM tournament_players WHERE tournament_id = %s;', (t_id,))
         cur.execute('DELETE FROM matches WHERE tournament_id = %s;', (t_id,))
-        cur.execute('DELETE FROM tournament WHERE tournament_id = %s LIMIT 1;', (t_id,))
+        cur.execute('''DELETE FROM tournaments WHERE ctid IN (
+                       SELECT ctid
+                        FROM tournaments
+                        WHERE id = %s
+                        LIMIT 1
+                    );''', (t_id,))
         # http://stackoverflow.com/questions/5170546/how-do-i-delete-a-fixed-number-of-rows-with-sorting-in-postgresql
     else:
         cur.execute('DELETE FROM tournament_players;')
@@ -64,6 +69,21 @@ def deleteTournament(tournament=None):
     conn.close()
 
 def countPlayers():
+    """
+        Returns the number of all players currently registered.
+    :return:
+    """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute('SELECT count(*) FROM players;')
+    player_count = cur.fetchone()
+    if not player_count[0]:
+        return 0
+    return int(player_count[0])
+    conn.close()
+
+
+def countRegisteredPlayers():
     """
         Returns the number of players currently registered.
     :return:
