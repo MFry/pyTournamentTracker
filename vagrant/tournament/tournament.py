@@ -100,6 +100,11 @@ def countRegisteredPlayers():
 
 
 def registerTournament(tournament):
+    """
+
+    :param tournament:
+    :return:
+    """
     conn = connect()
     cur = conn.cursor()
     cur.execute('INSERT INTO tournaments VALUES (%s) RETURNING id;', (tournament,))
@@ -127,12 +132,17 @@ def registerPlayer(name, tournament='default'):
     cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (bleach.clean(name),))
     player_id = cur.fetchone()[0]
     tournament_id = getTournament(tournament)
+    # Check if tournament exists
     if not tournament_id:
         tournament_id = registerTournament(tournament)
-    # print(player_id, tournament_id)
+    # link player to tournament
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
     conn.commit()
     conn.close()
+
+
+def register_player_to_tournament(player_id, tournament='default'):
+    pass
 
 
 def getTournament(tournament):
