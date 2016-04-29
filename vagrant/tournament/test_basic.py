@@ -63,8 +63,17 @@ class TestTournament(unittest.TestCase):
         self.assertFalse(c2 != 5, 'countPlayers should return 5 got instead {}'.format(c2))
 
     def test_get_tournament(self):
+        deleteTournament()
+        t_id = getTournament('default')
+        self.assertFalse(t_id, 'No tournament should be returned after deletions.')
         registerTournament('test1')
-
+        t_id = getTournament('test1')
+        self.assertTrue(t_id, 'Tournament was not found')
+        registerTournament('test2')
+        t_id_test1 = getTournament('test1')
+        t_id_test2 = getTournament('test2')
+        self.assertFalse(t_id_test1 == t_id_test2,
+                         "getTournament is supposed to return two unique id's for 2 tournaments")
 
     def test_standings_before_matches(self):
         """
