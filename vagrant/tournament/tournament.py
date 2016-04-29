@@ -64,7 +64,7 @@ def deleteTournament(tournament=None):
     else:
         cur.execute('DELETE FROM tournament_players;')
         cur.execute('DELETE FROM matches;')
-        cur.execute('DELETE FROM tournament;')
+        cur.execute('DELETE FROM tournaments;')
     conn.commit()
     conn.close()
 
