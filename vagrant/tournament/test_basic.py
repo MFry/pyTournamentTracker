@@ -80,6 +80,23 @@ class TestTournament(unittest.TestCase):
         self.assertFalse(t_id_test1 > t_id_test2,
                          'Tournament test1 should return a serial smaller than tournament test2.'
                          'Instead returned test1 : {} test2 : {}'.format(t_id_test1, t_id_test2))
+        registerTournament('test3')
+        t_id_test3 = getTournament('test3')
+        t_id_test2 = getTournament('test2')
+        t_id_test1 = getTournament('test1')
+        self.assertFalse(t_id_test3 == t_id_test2 or t_id_test2 == t_id_test1 or t_id_test1 == t_id_test3,
+                         "getTournament is supposed to return three unique id's for 3 tournaments")
+        self.assertFalse(t_id_test3 < t_id_test2 < t_id_test1,
+                         'Tournament test1 should return a serial smaller than tournament test2.'
+                         'Instead returned test1 : {} test2 : {}'.format(t_id_test1, t_id_test2, t_id_test3))
+        deleteTournament('test3')
+        t_id_test3 = getTournament('test3')
+        self.assertFalse(t_id_test3,
+                         'Tournament is supposed to be deleted instead "test3" returned {}'.format(t_id_test3))
+        deleteTournament()
+        t_id_test2 = getTournament('test2')
+        t_id_test1 = getTournament('test1')
+        self.assertFalse(t_id_test2 or t_id_test1, 'Tournaments are not correctly deleted')
 
     def test_standings_before_matches(self):
         """
