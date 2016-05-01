@@ -139,6 +139,7 @@ def registerPlayer(name, tournament='default'):
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
     conn.commit()
     conn.close()
+    return player_id
 
 
 def register_player_to_tournament(player_id, tournament='default'):
