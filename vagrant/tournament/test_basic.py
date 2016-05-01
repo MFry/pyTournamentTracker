@@ -62,7 +62,7 @@ class TestTournament(unittest.TestCase):
         self.assertFalse(c != 1, 'countRegisteredPlayers should return 1 from across default tournament')
         self.assertFalse(c2 != 5, 'countPlayers should return 5 got instead {}'.format(c2))
 
-    def test_get_tournament(self):
+    def test_get_tournament_and_player_id(self):
         """
          Tests registration and retrieval of tournaments
         """
@@ -101,7 +101,13 @@ class TestTournament(unittest.TestCase):
         t_id_test4 = getTournament('test2')
         self.assertFalse(t_id_test4 < t_id_test3, 'New tournament "test2" should return a serial larger than'
                                                   'former "test3" id.')
-
+        p_id = getPlayer('Not Here')
+        self.assertFalse(p_id, 'Got an id for a player that does not exist.')
+        registered_id = registerPlayer('I Here')
+        p_id = getPlayer('I Here')
+        self.assertFalse(registered_id != p_id,
+                         'Player id does not match ID returned({}) when player was registered({})'.format(p_id,
+                                                                                                          registered_id))
 
     def test_standings_before_matches(self):
         """
