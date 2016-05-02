@@ -126,6 +126,19 @@ class TestTournament(unittest.TestCase):
         self.assertFalse(set([name1, name2]) != set(["Melpomene Murray", "Randy Schwartz"]), "Registered players' names should appear in standings, "
                          "even if they have no matches played.")
 
+    def test_multi_standings_before_match(self):
+        registerPlayer('John Cena', 'wrestling')
+        registerPlayer('The Rock', 'wrestling')
+        registerPlayer('Bill Gates', 'CE-THROWDOWN')
+        registerPlayer('Steve Jobs', 'CE-THROWDOWN')
+        standings1 = playerStandings('wrestling')
+        self.assertFalse(len(standings1) < 2, "Two Players should appear in playerStandings even before "
+                                              "they have played any matches.")
+        standings2 = playerStandings('CE-THROWDOWN')
+        self.assertFalse(len(standings2) < 2, "Two Players should appear in playerStandings even before "
+                                              "they have played any matches.")
+
+
     def test_report_matches(self):
         """
         Test that matches are reported properly.
