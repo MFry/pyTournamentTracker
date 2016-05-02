@@ -147,6 +147,11 @@ def register_player_to_tournament(player_id, tournament='default'):
 
 
 def getTournament(tournament):
+    """
+     Finds the tournament id for a given tournament name
+    :param tournament: The name of the tournament
+    :return: An Integer id of the tournament
+    """
     conn = connect()
     cur = conn.cursor()
     cur.execute('SELECT id FROM tournaments WHERE name = %s LIMIT 1;', (tournament,))
@@ -160,6 +165,11 @@ def getTournament(tournament):
 
 
 def getPlayer(player):
+    """
+        Finds the unique id of the first registered player with the name
+    :param player: Name of the player to be found
+    :return: First result of a player with the given name
+    """
     conn = connect()
     cur = conn.cursor()
     cur.execute('SELECT id FROM players WHERE name = %s LIMIT 1;', (player,))

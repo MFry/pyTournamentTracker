@@ -127,6 +127,9 @@ class TestTournament(unittest.TestCase):
                          "even if they have no matches played.")
 
     def test_multi_standings_before_match(self):
+        """
+        Similar test to test_standings_before_matches but with multiple tournaments
+        """
         registerPlayer('John Cena', 'wrestling')
         registerPlayer('The Rock', 'wrestling')
         registerPlayer('Bill Gates', 'CE-THROWDOWN')
