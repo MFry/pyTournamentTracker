@@ -131,7 +131,7 @@ class TestTournament(unittest.TestCase):
         Similar test to test_standings_before_matches but with multiple tournaments
         """
         registerPlayer('John Cena', 'wrestling')
-        registerPlayer('The Rock', 'wrestling')
+        registerPlayer('John Cena', 'wrestling')
         registerPlayer('Bill Gates', 'CE-THROWDOWN')
         registerPlayer('Steve Jobs', 'CE-THROWDOWN')
         standings1 = playerStandings('wrestling')
@@ -140,7 +140,16 @@ class TestTournament(unittest.TestCase):
         standings2 = playerStandings('CE-THROWDOWN')
         self.assertFalse(len(standings2) < 2, "Two Players should appear in playerStandings even before "
                                               "they have played any matches.")
-
+        self.assertFalse(len(standings1[0]) != 4, "Each playerStandings row should have four columns.")
+        self.assertFalse(len(standings2[0]) != 4, "Each playerStandings row should have four columns.")
+        [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings1
+        self.assertFalse(set([name1, name2]) != set(['John Cena', 'John Cena']),
+                         "Registered players' names should appear in standings, "
+                         "even if they have no matches played.")
+        [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings2
+        self.assertFalse(set([name1, name2]) != set(['Bill Gates', 'Steve Jobs']),
+                         "Registered players' names should appear in standings, "
+                         "even if they have no matches played.")
 
     def test_report_matches(self):
         """
