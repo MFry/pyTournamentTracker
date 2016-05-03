@@ -19,25 +19,25 @@ def connect():
 
 def deleteMatches(tournament=None):
     """
-        Remove all the match records from the database unless a tournament is chosen then it
-        removes matches history specifically from that tournament
+        Removes all the match records from the database unless a tournament is chosen then it
+        removes match history specifically from that tournament.
     """
     conn = connect()
     cur = conn.cursor()
     if tournament:
         cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,))
         tournament_id = cur.fetchone()[0]
-        # cur.execute('DELETE FROM tournament_players WHERE tournament_id = (%s);', (tournament_id,))
         cur.execute('DELETE FROM matches WHERE t_id = (%s);', (tournament_id,))
     else:
-        #cur.execute('DELETE FROM tournament_players;')
         cur.execute('DELETE FROM matches;')
     conn.commit()
     conn.close()
 
 
 def deletePlayers():
-    """Remove all the players and their match records from the database."""
+    """
+        Remove all the players. NOTE: This will remove the player tournament registration as well as their match records from the database.
+    """
     conn = connect()
     cur = conn.cursor()
     cur.execute('DELETE FROM tournament_players;')
@@ -48,10 +48,18 @@ def deletePlayers():
 
 
 def deleteTournament(tournament=None):
+    """
+        Removes all tournaments unless a tournament is given. NOTE: This will remove all the player registrations (not players) and any matches associated with the tournament.
+        If tournament is not found an exception is raised
+    :param tournament: Name of the tournament to be deleted.
+    """
     conn = connect()
     cur = conn.cursor()
-    t_id = getTournament(tournament)
-    if t_id:
+
+    if tournament:
+        t_id = getTournament(tournament)
+        if not t_id:
+            raise psycopg2.ProgrammingError('{} not found in tournaments table'.format(tournament))
         cur.execute('DELETE FROM tournament_players WHERE tournament_id = %s;', (t_id,))
         cur.execute('DELETE FROM matches WHERE tournament_id = %s;', (t_id,))
         cur.execute('''DELETE FROM tournaments WHERE ctid IN (
@@ -71,23 +79,25 @@ def deleteTournament(tournament=None):
 
 def countPlayers():
     """
-        Returns the number of all players currently registered.
-    :return:
+
+    :rtype: int
+    :return: Returns the total number of players currently registered
     """
     conn = connect()
     cur = conn.cursor()
     cur.execute('SELECT count(*) FROM players;')
     player_count = cur.fetchone()
+    conn.close()
     if not player_count[0]:
         return 0
     return int(player_count[0])
-    conn.close()
 
 
 def countRegisteredPlayers():
     """
-        Returns the number of players currently registered.
-    :return:
+
+    :rtype: int
+    :return: Returns the number of players currently registered in tournaments.
     """
     conn = connect()
     cur = conn.cursor()
@@ -101,9 +111,12 @@ def countRegisteredPlayers():
 
 def registerTournament(tournament):
     """
-
-    :param tournament:
-    :return:
+        Registers a new tournament. Note the tournament name has to be unique otherwise an exception
+            (psycopg2.DatabaseError) is raised
+    :param tournament: The name of the new tournament to be registered
+    :type tournament: str
+    :return: Returns the unique assigned id of the new tournament
+        :rtype: int
     """
     conn = connect()
     cur = conn.cursor()
@@ -120,12 +133,11 @@ def registerPlayer(name, tournament='default'):
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
 
-    Args:
-      name: the player's full name (need not be unique).
 
-    :param name:
-    :param tournament:
-    :return:
+    :param name: the player's full name (need not be unique).
+    :param tournament: The name of the tournament the player will participate in
+    :return: Returns the unique assigned id of the new player
+        :rtype: int
     """
     conn = connect()
     cur = conn.cursor()
@@ -148,7 +160,7 @@ def register_player_to_tournament(player_id, tournament='default'):
 
 def getTournament(tournament):
     """
-     Finds the tournament id for a given tournament name
+        Finds the tournament id for a given tournament name
     :param tournament: The name of the tournament
     :return: An Integer id of the tournament
     """
@@ -287,7 +299,8 @@ def _generate_match_history(tournament):
     return matches
 
 def swissPairings(tournament='default'):
-    """Returns a list of pairs of players for the next round of a match.
+    """
+        Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player
     appears exactly once in the pairings.  Each player is paired with another
@@ -338,4 +351,3 @@ def swissPairings(tournament='default'):
     results = [(key, names[key], res[key], names[res[key]]) for key in res]
 
     return results
-
