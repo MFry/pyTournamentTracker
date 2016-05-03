@@ -210,17 +210,22 @@ def getPlayer(player):
 
 
 def playerStandings(tournament='default'):
-    """Returns a list of the players and their win records, sorted by wins.
+    """
+    Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
     tied for first place if there is currently a tie.
 
-    Returns:
-      A list of tuples, each of which contains (id, name, wins, matches):
-        p_id: the player's unique id (assigned by the database)
-        name: the player's full name (as registered)
-        wins: the number of matches the player has won
-        matches: the number of matches the player has played
+
+    :param tournament: Name of the tournament from which to return the standings of the players
+        :type tournament: str
+    :return:
+          A list of tuples, each of which contains (id, name, wins, matches):
+            p_id: the player's unique id (assigned by the database)
+            name: the player's full name (as registered)
+            wins: the number of matches the player has won
+            matches: the number of matches the player has played
+
     """
     conn = connect()
     cur = conn.cursor()
@@ -242,9 +247,9 @@ def reportMatch(players, tournament='default'):
     :param players: dictionary of
                     key: id numbers of the players
                     value: Boolean whether they won or lost
-    :type players: dict of (str, bool)
+        :type players: dict of (str, bool)
     :param tournament:
-    :return:
+        :type tournament: str
     """
     if not tournament:
         raise ValueError('tournament has unsupported value of {}'.format(str(tournament)))
