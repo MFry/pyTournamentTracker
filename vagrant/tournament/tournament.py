@@ -21,6 +21,9 @@ def deleteMatches(tournament=None):
     """
         Removes all the match records from the database unless a tournament is chosen then it
         removes match history specifically from that tournament.
+
+        :param tournament: Name of the tournament from which to delete the matches
+            :type tournament: str
     """
     conn = connect()
     cur = conn.cursor()
@@ -52,6 +55,7 @@ def deleteTournament(tournament=None):
         Removes all tournaments unless a tournament is given. NOTE: This will remove all the player registrations (not players) and any matches associated with the tournament.
         If tournament is not found an exception is raised
     :param tournament: Name of the tournament to be deleted.
+        :type tournament: str
     """
     conn = connect()
     cur = conn.cursor()
@@ -80,8 +84,8 @@ def deleteTournament(tournament=None):
 def countPlayers():
     """
 
-    :rtype: int
     :return: Returns the total number of players currently registered
+        :rtype: int
     """
     conn = connect()
     cur = conn.cursor()
@@ -96,8 +100,8 @@ def countPlayers():
 def countRegisteredPlayers():
     """
 
-    :rtype: int
     :return: Returns the number of players currently registered in tournaments.
+        :rtype: int
     """
     conn = connect()
     cur = conn.cursor()
@@ -114,7 +118,7 @@ def registerTournament(tournament):
         Registers a new tournament. Note the tournament name has to be unique otherwise an exception
             (psycopg2.DatabaseError) is raised
     :param tournament: The name of the new tournament to be registered
-    :type tournament: str
+        :type tournament: str
     :return: Returns the unique assigned id of the new tournament
         :rtype: int
     """
@@ -135,7 +139,9 @@ def registerPlayer(name, tournament='default'):
 
 
     :param name: the player's full name (need not be unique).
+        :type name: str
     :param tournament: The name of the tournament the player will participate in
+        :type tournament: str
     :return: Returns the unique assigned id of the new player
         :rtype: int
     """
