@@ -11,6 +11,7 @@ import networkx as nx
 def connect():
     """
         Establishes a connection to the tournament database
+
     :rtype: psycopg2.connection
     :return: psycop2g connection object to the tournament database
     """
@@ -54,6 +55,7 @@ def deleteTournament(tournament=None):
     """
         Removes all tournaments unless a tournament is given. NOTE: This will remove all the player registrations (not players) and any matches associated with the tournament.
         If tournament is not found an exception is raised
+
     :param tournament: Name of the tournament to be deleted.
         :type tournament: str
     """
@@ -117,6 +119,7 @@ def registerTournament(tournament):
     """
         Registers a new tournament. Note the tournament name has to be unique otherwise an exception
             (psycopg2.DatabaseError) is raised
+
     :param tournament: The name of the new tournament to be registered
         :type tournament: str
     :return: Returns the unique assigned id of the new tournament
@@ -132,11 +135,11 @@ def registerTournament(tournament):
 
 
 def registerPlayer(name, tournament='default'):
-    """Adds a player to the tournament database.
+    """
+    Adds a player to the tournament database.
 
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
-
 
     :param name: the player's full name (need not be unique).
         :type name: str
@@ -167,8 +170,11 @@ def register_player_to_tournament(player_id, tournament='default'):
 def getTournament(tournament):
     """
         Finds the tournament id for a given tournament name
+
     :param tournament: The name of the tournament
-    :return: An Integer id of the tournament
+        :type tournament: str
+    :return: An id of the tournament
+        :rtype: int
     """
     conn = connect()
     cur = conn.cursor()
@@ -185,8 +191,11 @@ def getTournament(tournament):
 def getPlayer(player):
     """
         Finds the unique id of the first registered player with the name
+
     :param player: Name of the player to be found
+        :type player: str
     :return: First result of a player with the given name
+        :rtype int
     """
     conn = connect()
     cur = conn.cursor()
