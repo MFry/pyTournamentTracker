@@ -218,7 +218,7 @@ class TestTournament(unittest.TestCase):
     def test_multi_swiss_pairing(self):
         """
 
-        :return:
+
         """
         registerPlayer("George Washington", "Risk")
         registerPlayer("Erwin Rommel", "Risk")
@@ -228,9 +228,19 @@ class TestTournament(unittest.TestCase):
         registerPlayer("Napoleon Bonaparte", "Risk")
         registerPlayer("Genghis Khan", "Risk")
         registerPlayer("Hannibal Barca", "Risk")
-        standings = playerStandings()
+
+        registerPlayer("Dollar", "Money")
+        registerPlayer("Yen", "Money")
+        registerPlayer("Euro", "Money")
+        registerPlayer("Yuan", "Money")
+
+        standings = playerStandings("Risk")
         [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
-        pairings = swissPairings()
+        pairings = swissPairings("Risk")
+
+        standings = playerStandings("Money")
+
+        pairings = swissPairings("Money")
 
 
 
