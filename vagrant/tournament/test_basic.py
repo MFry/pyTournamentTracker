@@ -206,6 +206,24 @@ class TestTournament(unittest.TestCase):
             if pair not in possible_pairs:
                 self.fail('Pair: {} not a possible pair.'.format(str(pair)))
 
+    def test_multi_swiss_pairing(self):
+        """
+
+        :return:
+        """
+        registerPlayer("George Washington", "Risk")
+        registerPlayer("Erwin Rommel", "Risk")
+        registerPlayer("Otto von Bismarck", "Risk")
+        registerPlayer("Alexander III of Macedon", "Risk")
+        registerPlayer("Sun Tzu", "Risk")
+        registerPlayer("Napoleon Bonaparte", "Risk")
+        registerPlayer("Genghis Khan", "Risk")
+        registerPlayer("Hannibal Barca", "Risk")
+        standings = playerStandings()
+        [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
+        pairings = swissPairings()
+
+
 
 if __name__ == '__main__':
     unittest.main()
