@@ -234,14 +234,25 @@ class TestTournament(unittest.TestCase):
         registerPlayer("Euro", "Money")
         registerPlayer("Yuan", "Money")
 
-        standings = playerStandings("Risk")
-        [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
+        standings1 = playerStandings("Risk")
+        standings2 = playerStandings("Money")
+        for standing1 in standings1:
+            for standing2 in standings2:
+                self.assertFalse(standings1[0] == standings2[0],
+                                 'Expected no player crossover. "Risk" tournament, player:{} "Money" tournament, player:{}'.format(
+                                     standing1, standing2))
+
+        [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings1]
+        reportMatch({id1: True, id2: False}, "Risk")
+        reportMatch({id3: True, id4: False}, "Risk")
+        reportMatch({id5: True, id6: False}, "Risk")
+        reportMatch({id7: True, id8: False}, "Risk")
         pairings = swissPairings("Risk")
 
-        standings = playerStandings("Money")
-
+        [id1, id2, id3, id4] = [row[0] for row in standings2]
+        reportMatch({id1: True, id2: False}, "Money")
+        reportMatch({id3: True, id4: False}, "Money")
         pairings = swissPairings("Money")
-
 
 
 if __name__ == '__main__':
