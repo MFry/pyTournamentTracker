@@ -6,11 +6,12 @@ Multi-tournament swiss-pairing tracker build on python.
 vagrant up
 vagrant ssh  
 ```
+Once you are logged into the vm
 ``` bash
 source /vagrant/tournament/virtualenv/bin/activate
 cd /vagrant/tournamnet/
 make -f Makefile
-python test_basic.py_    
+python test_basic.py    
 ```
 
 
