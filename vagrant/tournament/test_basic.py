@@ -3,8 +3,7 @@
 # Test cases for tournament.py
 # These tests are not exhaustive, but they should cover the majority of cases.
 """
-# If you do add any of the extra credit options, be sure to add/modify these test cases
-# as appropriate to account for your module's added functionality.
+
 import unittest
 from tournament import *
 
@@ -217,7 +216,8 @@ class TestTournament(unittest.TestCase):
 
     def test_multi_swiss_pairing(self):
         """
-
+            Tests that matches are reported properly before and after reporting for multiple tournaments
+            Tests that swiss pairing is properly conducted for multiple tournaments in basic scenarios (no player cross over)
 
         """
         registerPlayer("George Washington", "Risk")
