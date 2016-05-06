@@ -248,11 +248,31 @@ class TestTournament(unittest.TestCase):
         reportMatch({id5: True, id6: False}, "Risk")
         reportMatch({id7: True, id8: False}, "Risk")
         pairings = swissPairings("Risk")
+        [(pid1, pname1, pid2, pname2), (pid3, pname3, pid4, pname4), (pid5, pname5, pid6, pname6),
+         (pid7, pname7, pid8, pname8)] = pairings
+        possible_pairs = set([frozenset([id1, id3]), frozenset([id1, id5]),
+                              frozenset([id1, id7]), frozenset([id3, id5]),
+                              frozenset([id3, id7]), frozenset([id5, id7]),
+                              frozenset([id2, id4]), frozenset([id2, id6]),
+                              frozenset([id2, id8]), frozenset([id4, id6]),
+                              frozenset([id4, id8]), frozenset([id6, id8])
+                              ])
+        actual_pairs = set(
+            [frozenset([pid1, pid2]), frozenset([pid3, pid4]), frozenset([pid5, pid6]), frozenset([pid7, pid8])])
+        for pair in actual_pairs:
+            if pair not in possible_pairs:
+                self.fail('Pair: {} not a possible pair.'.format(str(pair)))
 
         [id1, id2, id3, id4] = [row[0] for row in standings2]
         reportMatch({id1: True, id2: False}, "Money")
         reportMatch({id3: True, id4: False}, "Money")
         pairings = swissPairings("Money")
+        [(pid1, pname1, pid2, pname2), (pid3, pname3, pid4, pname4)] = pairings
+        possible_pairs = set([frozenset([id1, id3]), frozenset([id2, id4])])
+        actual_pairs = set([frozenset([pid1, pid2]), frozenset([pid3, pid4])])
+        for pair in actual_pairs:
+            if pair not in possible_pairs:
+                self.fail('Pair: {} not a possible pair.'.format(str(pair)))
 
 
 if __name__ == '__main__':
