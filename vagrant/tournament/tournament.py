@@ -63,7 +63,7 @@ def delete_tournament(tournament=None):
     cur = conn.cursor()
 
     if tournament:
-        t_id = getTournament(tournament)
+        t_id = get_tournament(tournament)
         if not t_id:
             raise psycopg2.ProgrammingError('{} not found in tournaments table'.format(tournament))
         cur.execute('DELETE FROM tournament_players WHERE tournament_id = %s;', (t_id,))
@@ -83,7 +83,7 @@ def delete_tournament(tournament=None):
     conn.close()
 
 
-def countPlayers():
+def count_players():
     """
 
     :return: Returns the total number of players currently registered
@@ -99,7 +99,7 @@ def countPlayers():
     return int(player_count[0])
 
 
-def countRegisteredPlayers():
+def count_registered_players():
     """
 
     :return: Returns the number of players currently registered in tournaments.
@@ -115,7 +115,7 @@ def countRegisteredPlayers():
     conn.close()
 
 
-def registerTournament(tournament):
+def register_tournament(tournament):
     """
         Registers a new tournament. Note the tournament name has to be unique otherwise an exception
             (psycopg2.DatabaseError) is raised
@@ -134,7 +134,7 @@ def registerTournament(tournament):
     return tournament_id
 
 
-def registerPlayer(name, tournament='default'):
+def register_player(name, tournament='default'):
     """
     Adds a player to the tournament database.
 
@@ -152,10 +152,10 @@ def registerPlayer(name, tournament='default'):
     cur = conn.cursor()
     cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (bleach.clean(name),))
     player_id = cur.fetchone()[0]
-    tournament_id = getTournament(tournament)
+    tournament_id = get_tournament(tournament)
     # Check if tournament exists
     if not tournament_id:
-        tournament_id = registerTournament(tournament)
+        tournament_id = register_tournament(tournament)
     # link player to tournament
     cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
     conn.commit()
@@ -167,7 +167,7 @@ def register_player_to_tournament(player_id, tournament='default'):
     pass
 
 
-def getTournament(tournament):
+def get_tournament(tournament):
     """
         Finds the tournament id for a given tournament name
 
@@ -188,7 +188,7 @@ def getTournament(tournament):
     return tournament_id
 
 
-def getPlayer(player):
+def get_player(player):
     """
         Finds the unique id of the first registered player with the name
 
@@ -209,7 +209,7 @@ def getPlayer(player):
     return player_id
 
 
-def playerStandings(tournament='default'):
+def player_standings(tournament='default'):
     """
     Returns a list of the players and their win records, sorted by wins.
 
@@ -229,7 +229,7 @@ def playerStandings(tournament='default'):
     """
     conn = connect()
     cur = conn.cursor()
-    tournament_id = getTournament(tournament)
+    tournament_id = get_tournament(tournament)
     if not tournament_id:
         return None
     cur.execute(
@@ -240,7 +240,7 @@ def playerStandings(tournament='default'):
     return standings
 
 
-def reportMatch(players, tournament='default'):
+def report_match(players, tournament='default'):
     """
         Records the outcome of a single match between two players/teams.
 
@@ -255,7 +255,7 @@ def reportMatch(players, tournament='default'):
         raise ValueError('tournament has unsupported value of {}'.format(str(tournament)))
     conn = connect()
     cur = conn.cursor()
-    tournament_id = getTournament(tournament)
+    tournament_id = get_tournament(tournament)
     cur.execute('SELECT COALESCE(max(match),0) as last_match FROM matches WHERE tournament_id = %s;', (tournament_id,))
     last_match = cur.fetchone()[0]
     last_match += 1
@@ -309,7 +309,7 @@ def _generate_match_history(tournament):
     """
     conn = connect()
     cur = conn.cursor()
-    t_id = getTournament(tournament)
+    t_id = get_tournament(tournament)
     cur.execute('''SELECT array_to_string(array_agg(DISTINCT player),',') as players_in_game
                        FROM matches
                        WHERE tournament_id = (%s)
@@ -318,7 +318,8 @@ def _generate_match_history(tournament):
     conn.close()
     return matches
 
-def swissPairings(tournament='default'):
+
+def swiss_pairings(tournament='default'):
     """
         Returns a list of pairs of players for the next round of a match.
   
@@ -335,10 +336,9 @@ def swissPairings(tournament='default'):
         name2: the second player's name
     """
     G = nx.Graph()
-    standings = playerStandings(tournament)
+    standings = player_standings(tournament)
     # Standings returns: [(1, 'p1', 2, 2), (3, 'p3', 1, 2), (4, 'p4', 1, 2), (2, 'p2', 0, 2)]
     matches = _generate_match_history(tournament)
-    # TODO : Handle case when match history is empty
     # matches should return (player_id, winner, match)
     # returns [(1, True, 1), (2, False, 1), (3, False, 2), (4, True, 2), (1, True, 3), (4, False, 3), (2, False, 4), (3, True, 4)]
 
