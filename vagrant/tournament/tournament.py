@@ -18,7 +18,7 @@ def connect():
     return psycopg2.connect("dbname=tournament")
 
 
-def deleteMatches(tournament=None):
+def delete_matches(tournament=None):
     """
         Removes all the match records from the database unless a tournament is chosen then it
         removes match history specifically from that tournament.
@@ -38,7 +38,7 @@ def deleteMatches(tournament=None):
     conn.close()
 
 
-def deletePlayers():
+def delete_players():
     """
         Remove all the players. NOTE: This will remove the player tournament registration as well as their match records from the database.
     """
@@ -51,7 +51,7 @@ def deletePlayers():
     conn.close()
 
 
-def deleteTournament(tournament=None):
+def delete_tournament(tournament=None):
     """
         Removes all tournaments unless a tournament is given. NOTE: This will remove all the player registrations (not players) and any matches associated with the tournament.
         If tournament is not found an exception is raised

@@ -11,12 +11,12 @@ from tournament import *
 class TestTournament(unittest.TestCase):
 
     def setUp(self):
-        deleteMatches()
-        deletePlayers()
+        delete_matches()
+        delete_players()
 
     def tearDown(self):
-        deleteMatches()
-        deletePlayers()
+        delete_matches()
+        delete_players()
 
     def test_registration_and_count(self):
         """
@@ -32,7 +32,7 @@ class TestTournament(unittest.TestCase):
         registerPlayer("Jace Beleren")
         c = countPlayers()
         self.assertTrue(c == 2, 'countPlayers should return 2, but returned {}'.format(c))
-        deletePlayers()
+        delete_players()
         c = countPlayers()
         self.assertTrue(c == 0, 'countPlayers should return numeric zero, but returned {}'.format(c))
 
@@ -50,12 +50,12 @@ class TestTournament(unittest.TestCase):
         c2 = countPlayers()
         self.assertFalse(c != 5, 'countRegisteredPlayers should return 5 from across 3 tournaments')
         self.assertFalse(c2 != c, 'countPlayers should return 5 got instead {}'.format(c2))
-        deleteTournament(tournament='t1')
+        delete_tournament(tournament='t1')
         c = countRegisteredPlayers()
         c2 = countPlayers()
         self.assertFalse(c != 3, 'countRegisteredPlayers should return 3 from across 2 tournaments')
         self.assertFalse(c2 != 5, 'countPlayers should return 5 got instead {}'.format(c2))
-        deleteTournament(tournament='t2')
+        delete_tournament(tournament='t2')
         c = countRegisteredPlayers()
         c2 = countPlayers()
         self.assertFalse(c != 1, 'countRegisteredPlayers should return 1 from across default tournament')
@@ -65,7 +65,7 @@ class TestTournament(unittest.TestCase):
         """
          Tests registration and retrieval of tournaments
         """
-        deleteTournament()
+        delete_tournament()
         t_id = getTournament('default')
         self.assertFalse(t_id, 'No tournament should be returned after deletions.')
         registerTournament('test1')
@@ -88,11 +88,11 @@ class TestTournament(unittest.TestCase):
         self.assertFalse(t_id_test3 < t_id_test2 < t_id_test1,
                          'Tournament test1 should return a serial smaller than tournament test2.'
                          'Instead returned test1 : {} test2 : {}'.format(t_id_test1, t_id_test2, t_id_test3))
-        deleteTournament('test3')
+        delete_tournament('test3')
         t_id_test = getTournament('test3')
         self.assertFalse(t_id_test,
                          'Tournament is supposed to be deleted instead "test3" returned {}'.format(t_id_test3))
-        deleteTournament()
+        delete_tournament()
         t_id_test2 = getTournament('test2')
         t_id_test1 = getTournament('test1')
         self.assertFalse(t_id_test2 or t_id_test1, 'Tournaments are not correctly deleted')
@@ -170,7 +170,7 @@ class TestTournament(unittest.TestCase):
                 self.assertFalse(w != 1, "Each match winner should have one win recorded.")
             elif i in (id2, id4):
                 self.assertFalse(w != 0, "Each match loser should have zero wins recorded.")
-        deleteMatches()
+        delete_matches()
         standings = playerStandings()
         self.assertFalse(len(standings) != 4, "Match deletion should not change number of players in standings.")
         for (i, n, w, m) in standings:
