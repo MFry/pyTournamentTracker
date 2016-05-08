@@ -5,11 +5,11 @@
 """
 
 import unittest
+
 from tournament import *
 
 
 class TestTournament(unittest.TestCase):
-
     def setUp(self):
         delete_matches()
         delete_players()
@@ -118,11 +118,12 @@ class TestTournament(unittest.TestCase):
         standings = player_standings()
         # TODO: Add testing for a 5-tuple return
         self.assertFalse(len(standings) < 2, "Players should appear in player_standings even before "
-                         "they have played any matches.")
+                                             "they have played any matches.")
         self.assertFalse(len(standings) > 2, "Only registered players should appear in standings.")
         self.assertFalse(len(standings[0]) != 4, "Each player_standings row should have four columns.")
         [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings
-        self.assertFalse(set([name1, name2]) != set(["Melpomene Murray", "Randy Schwartz"]), "Registered players' names should appear in standings, "
+        self.assertFalse(set([name1, name2]) != set(["Melpomene Murray", "Randy Schwartz"]),
+                         "Registered players' names should appear in standings, "
                          "even if they have no matches played.")
 
     def test_multi_standings_before_match(self):

@@ -3,9 +3,9 @@
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
-import psycopg2
 import bleach
 import networkx as nx
+import psycopg2
 
 
 def connect():
@@ -256,7 +256,7 @@ def report_match(players, tournament='default'):
     conn = connect()
     cur = conn.cursor()
     tournament_id = get_tournament(tournament)
-    cur.execute('SELECT COALESCE(max(match),0) as last_match FROM matches WHERE tournament_id = %s;', (tournament_id,))
+    cur.execute('SELECT COALESCE(max(match),0) AS last_match FROM matches WHERE tournament_id = %s;', (tournament_id,))
     last_match = cur.fetchone()[0]
     last_match += 1
     # print(last_match)
@@ -292,7 +292,7 @@ def _generate_players_games_played(standings, matches):
     # create a graph of players who played to create a graph of players who have not played
     # create a graph of players who played to create a graph of players who have not played
     for match in matches:
-        match = [int(i) for i in match[0].split( ',')]
+        match = [int(i) for i in match[0].split(',')]
         match = set(match)
         for player in match:
             plays[player] = plays[player].union(set(match)) - {player}
@@ -310,7 +310,7 @@ def _generate_match_history(tournament):
     conn = connect()
     cur = conn.cursor()
     t_id = get_tournament(tournament)
-    cur.execute('''SELECT array_to_string(array_agg(DISTINCT player),',') as players_in_game
+    cur.execute('''SELECT array_to_string(array_agg(DISTINCT player),',') AS players_in_game
                        FROM matches
                        WHERE tournament_id = (%s)
                        GROUP BY matches.match;''', (t_id,))
@@ -356,7 +356,7 @@ def swiss_pairings(tournament='default'):
         not_played = players - set(plays[player]) - {player}
         # print(not_played) returns {3}, {3,4}, {1,2},{2}
         # print(list(zip([player] * len(not_played), not_played))) returns [(1, 3)], [(2, 3), (2, 4)], [(3, 1), (3, 2)], [(4, 2)]
-        weights = list(map(lambda x: abs(G.node[x]['win']+G.node[player]['win'] + 1), not_played))
+        weights = list(map(lambda x: abs(G.node[x]['win'] + G.node[player]['win'] + 1), not_played))
         G.add_weighted_edges_from(list(zip([player] * len(not_played), not_played, weights)))
 
     res = nx.algorithms.max_weight_matching(G)
@@ -366,7 +366,7 @@ def swiss_pairings(tournament='default'):
         if key in res:
             del res[res[key]]
     # Convert into tuple pairs
-    names = {tup[0]:tup[1] for tup in standings}
+    names = {tup[0]: tup[1] for tup in standings}
 
     results = [(key, names[key], res[key], names[res[key]]) for key in res]
 
