@@ -1,5 +1,5 @@
 # pyTournamentTracker
-### P2: Tournament Results
+### Tournament Tracker
 Multi-tournament swiss-pairing tracker build on python.
 ## Usage
 ```
@@ -33,3 +33,7 @@ source /vagrant/tournament/virtualenv/bin/activate
 make -f Makefile
 ```
 
+### Run Test
+```bash
+python test_basic.py_
+```
