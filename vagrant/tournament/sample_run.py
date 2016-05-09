@@ -59,6 +59,7 @@ def basic_usage():
                 break
 
         print('Current Standings')
+        standings = player_standings()
         for s in standings:
             print('Player: {} -- ID: {} -- Games Played: {} -- Wins: {}'.format(s[1], s[0], s[3], s[2]))
         cont = input('Continue: (y/n)')
