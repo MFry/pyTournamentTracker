@@ -3,7 +3,7 @@
 Multi-tournament swiss-pairing tracker build on python.
 # Table of Contents
 
-    *   [Quick Start](#quick-start)
+    *   Quick Start
     *   Developers 
     *   Versions
     
@@ -38,6 +38,7 @@ pyTournamentTracker/
 |   ├── postgresql_provisions.sh
 |   ├── provision.sh
 |   ├── python_provisions.sh
+├── LICENSE
 ```
 
 #### Source Folder
@@ -70,5 +71,5 @@ python sample_run.py
 
 ## Versions
 The provided vagrant VM takes care of all the project dependencies such as:
-*   Python 3.5+
-*   PostgreSQL 9.5
+*   [Python 3.5+](https://docs.python.org/3/whatsnew/3.5.html)
+*   [PostgreSQL 9.5](https://wiki.postgresql.org/wiki/What's_new_in_PostgreSQL_9.5)
