@@ -2,6 +2,7 @@
 ### Tournament Tracker
 Multi-tournament swiss-pairing tracker build on python.
 ## Usage
+### First Time Start
 ```
 vagrant up
 vagrant ssh  

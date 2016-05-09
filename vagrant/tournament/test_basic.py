@@ -39,6 +39,9 @@ class TestTournament(unittest.TestCase):
     def test_multi_tournament_registration_count_delete(self):
         """
         Tests counting registered players across multiple tournaments
+            player count after 2 players for one tournament, 2 players for another tournament and one player for default tournament
+            player count after a tournament is deleted
+            player count after the other tournament is deleted
         """
         # TODO: Register current players for additional tournaments
         register_player('awesome person', tournament='t1')
@@ -63,9 +66,10 @@ class TestTournament(unittest.TestCase):
 
     def test_get_tournament_and_player_id(self):
         """
-         Tests registration and retrieval of tournaments
+         Tests registration and retrieval of tournament id's and player id's
         """
         delete_tournament()
+
         t_id = get_tournament('default')
         self.assertFalse(t_id, 'No tournament should be returned after deletions.')
         register_tournament('test1')
@@ -102,8 +106,8 @@ class TestTournament(unittest.TestCase):
                                                   'former "test3" id.')
         p_id = get_player('Not Here')
         self.assertFalse(p_id, 'Got an id for a player that does not exist.')
-        registered_id = register_player('I Here')
-        p_id = get_player('I Here')
+        registered_id = register_player('I M Here')
+        p_id = get_player('I M Here')
         self.assertFalse(registered_id != p_id,
                          'Player id does not match ID returned({}) when player was registered({})'.format(p_id,
                                                                                                           registered_id))
