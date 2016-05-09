@@ -16,13 +16,13 @@ python sample_run.py
 ```
 
 
-### Source Folder
+#### Source Folder
 
 ``` bash
 cd /vagrant/tournament/
 ```
 
-### Activate Virtual Environment
+#### Activate Virtual Environment
 
 ``` bash
 source /vagrant/tournament/virtualenv/bin/activate
