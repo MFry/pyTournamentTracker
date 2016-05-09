@@ -12,7 +12,7 @@ Once you are logged into the vm
 source /vagrant/tournament/virtualenv/bin/activate
 cd /vagrant/tournamnet/
 make -f Makefile
-python sample_run_.py    
+python sample_run.py    
 ```
 
 
