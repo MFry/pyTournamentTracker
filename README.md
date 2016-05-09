@@ -3,13 +3,14 @@
 Multi-tournament swiss-pairing tracker build on python.
 # Table of Contents
 
-*   [Quick Start](#first-time-start)
+*   [Quick Start](#quick-start)
 *   [Developer References](#references)
 *   [Versions](#versions)
 *   [Creators](#creators)
 *   [Copyright and license](#copyright-and-license)
 
-### First Time Start
+## Quick Start
+If you setup the provisions for the vagrant VM very few steps are needed to get up and running.
 ```
 vagrant up
 vagrant ssh  
@@ -22,7 +23,7 @@ make -f Makefile
 python sample_run.py    
 ```
 
-### What's included
+## What's included
 
 ```
 pyTournamentTracker/
@@ -75,9 +76,11 @@ The provided vagrant VM takes care of all the project dependencies such as:
 *   [Python 3.5+](https://docs.python.org/3/whatsnew/3.5.html)
 *   [PostgreSQL 9.5](https://wiki.postgresql.org/wiki/What's_new_in_PostgreSQL_9.5)
 
-##Creators
+## Creators
 
-Michal Frystacky
+**Michal Frystacky**
 
-##Copyright and License
+* <https://github.com/mfry>
+
+## Copyright and License
 Code and documentation copyright 2016 Michal Frystacky. Code released under the [MIT license](https://github.com/MFry/pyTournamentTracker/blob/master/LICENSE).
