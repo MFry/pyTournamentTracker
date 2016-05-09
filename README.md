@@ -5,6 +5,7 @@ Multi-tournament swiss-pairing tracker build on python.
 
 *   [Quick Start](#quick-start)
 *   [Developer References](#references)
+    *   [Run Tests](#run-test)
 *   [Versions](#versions)
 *   [Creators](#creators)
 *   [Copyright and license](#copyright-and-license)
@@ -15,7 +16,7 @@ If you setup the provisions for the vagrant VM very few steps are needed to get 
 vagrant up
 vagrant ssh  
 ```
-<a name="quick-start"></a>Once you are logged into the vm
+In VM
 ``` bash
 source /vagrant/tournament/virtualenv/bin/activate
 cd /vagrant/tournamnet/
@@ -49,6 +50,12 @@ pyTournamentTracker/
 cd /vagrant/tournament/
 ```
 
+#### Database used
+
+``` bash
+\c tournament
+```
+
 #### Activate Virtual Environment
 
 ``` bash
@@ -66,7 +73,7 @@ make -f Makefile
 python test_basic.py
 ```
 
-### Run Sample Code
+#### Run Sample Code
 ```bash
 python sample_run.py
 ```
