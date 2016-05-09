@@ -5,7 +5,7 @@
 
 import networkx as nx
 import psycopg2
-
+from contextlib import contextmanager
 
 def connect():
     """
@@ -17,6 +17,21 @@ def connect():
     return psycopg2.connect("dbname=tournament")
 
 
+@contextmanager
+def get_cursor():
+    conn = connect()
+    cursor = conn.cursor()
+    try:
+        yield cursor
+    except:
+        raise
+    else:
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def delete_matches(tournament=None):
     """
         Removes all the match records from the database unless a tournament is chosen then it
@@ -25,29 +40,24 @@ def delete_matches(tournament=None):
         :param tournament: Name of the tournament from which to delete the matches
             :type tournament: str
     """
-    conn = connect()
-    cur = conn.cursor()
-    if tournament:
-        cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,))
-        tournament_id = cur.fetchone()[0]
-        cur.execute('DELETE FROM matches WHERE t_id = (%s);', (tournament_id,))
-    else:
-        cur.execute('DELETE FROM matches;')
-    conn.commit()
-    conn.close()
+    with get_cursor() as cur:
+        if tournament:
+            cur.execute('SELECT id FROM tournaments WHERE name = (%s);', (tournament,))
+            tournament_id = cur.fetchone()[0]
+            cur.execute('DELETE FROM matches WHERE t_id = (%s);', (tournament_id,))
+        else:
+            cur.execute('DELETE FROM matches;')
+
 
 
 def delete_players():
     """
         Remove all the players. NOTE: This will remove the player tournament registration as well as their match records from the database.
     """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('DELETE FROM tournament_players;')
-    cur.execute('DELETE FROM players;')
-    cur.execute('DELETE FROM matches;')
-    conn.commit()
-    conn.close()
+    with get_cursor() as cur:
+        cur.execute('DELETE FROM tournament_players;')
+        cur.execute('DELETE FROM players;')
+        cur.execute('DELETE FROM matches;')
 
 
 def delete_tournament(tournament=None):
@@ -58,28 +68,24 @@ def delete_tournament(tournament=None):
     :param tournament: Name of the tournament to be deleted.
         :type tournament: str
     """
-    conn = connect()
-    cur = conn.cursor()
-
-    if tournament:
-        t_id = get_tournament(tournament)
-        if not t_id:
-            raise psycopg2.ProgrammingError('{} not found in tournaments table'.format(tournament))
-        cur.execute('DELETE FROM tournament_players WHERE tournament_id = %s;', (t_id,))
-        cur.execute('DELETE FROM matches WHERE tournament_id = %s;', (t_id,))
-        cur.execute('''DELETE FROM tournaments WHERE ctid IN (
-                       SELECT ctid
-                        FROM tournaments
-                        WHERE id = %s
-                        LIMIT 1
-                    );''', (t_id,))
-        # http://stackoverflow.com/questions/5170546/how-do-i-delete-a-fixed-number-of-rows-with-sorting-in-postgresql
-    else:
-        cur.execute('DELETE FROM tournament_players;')
-        cur.execute('DELETE FROM matches;')
-        cur.execute('DELETE FROM tournaments;')
-    conn.commit()
-    conn.close()
+    with get_cursor() as cur:
+        if tournament:
+            t_id = get_tournament(tournament)
+            if not t_id:
+                raise psycopg2.ProgrammingError('{} not found in tournaments table'.format(tournament))
+            cur.execute('DELETE FROM tournament_players WHERE tournament_id = %s;', (t_id,))
+            cur.execute('DELETE FROM matches WHERE tournament_id = %s;', (t_id,))
+            cur.execute('''DELETE FROM tournaments WHERE ctid IN (
+                           SELECT ctid
+                            FROM tournaments
+                            WHERE id = %s
+                            LIMIT 1
+                        );''', (t_id,))
+            # http://stackoverflow.com/questions/5170546/how-do-i-delete-a-fixed-number-of-rows-with-sorting-in-postgresql
+        else:
+            cur.execute('DELETE FROM tournament_players;')
+            cur.execute('DELETE FROM matches;')
+            cur.execute('DELETE FROM tournaments;')
 
 
 def count_players():
@@ -88,14 +94,12 @@ def count_players():
     :return: Returns the total number of players currently registered
         :rtype: int
     """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('SELECT count(*) FROM players;')
-    player_count = cur.fetchone()
-    conn.close()
-    if not player_count[0]:
-        return 0
-    return int(player_count[0])
+    with get_cursor() as cur:
+        cur.execute('SELECT count(*) FROM players;')
+        player_count = cur.fetchone()
+        if not player_count[0]:
+            return 0
+        return int(player_count[0])
 
 
 def count_registered_players(tournament=None):
@@ -105,18 +109,16 @@ def count_registered_players(tournament=None):
     :return: Returns the number of players currently registered in tournaments.
         :rtype: int
     """
-    conn = connect()
-    cur = conn.cursor()
-    if tournament:
-        t_id = get_tournament(tournament)
-        cur.execute('SELECT sum(total_players) FROM view_tournament_size WHERE tournament_id = %s;', (str(t_id),))
-    else:
-        cur.execute('SELECT sum(total_players) FROM view_tournament_size;')
-    tournaments_player_count = cur.fetchone()
-    if not tournaments_player_count[0]:
-        return 0
-    return int(tournaments_player_count[0])
-    conn.close()
+    with get_cursor() as cur:
+        if tournament:
+            t_id = get_tournament(tournament)
+            cur.execute('SELECT sum(total_players) FROM view_tournament_size WHERE tournament_id = %s;', (str(t_id),))
+        else:
+            cur.execute('SELECT sum(total_players) FROM view_tournament_size;')
+        tournaments_player_count = cur.fetchone()
+        if not tournaments_player_count[0]:
+            return 0
+        return int(tournaments_player_count[0])
 
 
 def register_tournament(tournament):
@@ -129,13 +131,10 @@ def register_tournament(tournament):
     :return: Returns the unique assigned id of the new tournament
         :rtype: int
     """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('INSERT INTO tournaments VALUES (%s) RETURNING id;', (tournament,))
-    conn.commit()
-    tournament_id = cur.fetchone()[0]
-    conn.close()
-    return tournament_id
+    with get_cursor() as cur:
+        cur.execute('INSERT INTO tournaments VALUES (%s) RETURNING id;', (tournament,))
+        tournament_id = cur.fetchone()[0]
+        return tournament_id
 
 
 def register_player(name, tournament='default'):
@@ -152,19 +151,16 @@ def register_player(name, tournament='default'):
     :return: Returns the unique assigned id of the new player
         :rtype: int
     """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (name,))
-    player_id = cur.fetchone()[0]
-    tournament_id = get_tournament(tournament)
-    # Check if tournament exists
-    if not tournament_id:
-        tournament_id = register_tournament(tournament)
-    # link player to tournament
-    cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
-    conn.commit()
-    conn.close()
-    return player_id
+    with get_cursor() as cur:
+        cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (name,))
+        player_id = cur.fetchone()[0]
+        tournament_id = get_tournament(tournament)
+        # Check if tournament exists
+        if not tournament_id:
+            tournament_id = register_tournament(tournament)
+        # link player to tournament
+        cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
+        return player_id
 
 
 def register_player_to_tournament(player_id, tournament='default'):
@@ -176,12 +172,9 @@ def register_player_to_tournament(player_id, tournament='default'):
     :type tournament: str
     :return:
     """
-    conn = connect()
-    cur = conn.cursor()
-    tournament_id = get_tournament(tournament)
-    cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
-    conn.commit()
-    conn.close()
+    with get_cursor() as cur:
+        tournament_id = get_tournament(tournament)
+        cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
 
 
 def get_tournament(tournament):
@@ -193,16 +186,14 @@ def get_tournament(tournament):
     :return: An id of the tournament
         :rtype: int
     """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('SELECT id FROM tournaments WHERE name = %s LIMIT 1;', (tournament,))
-    val = cur.fetchone()
-    if val:
-        tournament_id = val[0]
-    else:
-        tournament_id = val
-    conn.close()
-    return tournament_id
+    with get_cursor() as cur:
+        cur.execute('SELECT id FROM tournaments WHERE name = %s LIMIT 1;', (tournament,))
+        val = cur.fetchone()
+        if val:
+            tournament_id = val[0]
+        else:
+            tournament_id = val
+        return tournament_id
 
 
 def get_player(player):
@@ -214,16 +205,14 @@ def get_player(player):
     :return: First result of a player with the given name
         :rtype int
     """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('SELECT id FROM players WHERE name = %s LIMIT 1;', (player,))
-    val = cur.fetchone()
-    if val:
-        player_id = val[0]
-    else:
-        player_id = val
-    conn.close()
-    return player_id
+    with get_cursor() as cur:
+        cur.execute('SELECT id FROM players WHERE name = %s LIMIT 1;', (player,))
+        val = cur.fetchone()
+        if val:
+            player_id = val[0]
+        else:
+            player_id = val
+        return player_id
 
 
 def player_standings(tournament='default'):
@@ -244,17 +233,15 @@ def player_standings(tournament='default'):
             matches: the number of matches the player has played
 
     """
-    conn = connect()
-    cur = conn.cursor()
-    tournament_id = get_tournament(tournament)
-    if not tournament_id:
-        return None
-    cur.execute(
-        'SELECT p_id, player_name, games_won, games_played FROM view_player_stats WHERE t_id = %s ORDER BY games_won DESC, games_played DESC;',
-        (tournament_id,))
-    standings = cur.fetchall()
-    conn.close()
-    return standings
+    with get_cursor() as cur:
+        tournament_id = get_tournament(tournament)
+        if not tournament_id:
+            return None
+        cur.execute(
+            'SELECT p_id, player_name, games_won, games_played FROM view_player_stats WHERE t_id = %s ORDER BY games_won DESC, games_played DESC;',
+            (tournament_id,))
+        standings = cur.fetchall()
+        return standings
 
 
 def report_match(players, tournament='default'):
@@ -270,18 +257,16 @@ def report_match(players, tournament='default'):
     """
     if not tournament:
         raise ValueError('tournament has unsupported value of {}'.format(str(tournament)))
-    conn = connect()
-    cur = conn.cursor()
-    tournament_id = get_tournament(tournament)
-    cur.execute('SELECT COALESCE(max(match),0) AS last_match FROM matches WHERE tournament_id = %s;', (tournament_id,))
-    last_match = cur.fetchone()[0]
-    last_match += 1
-    # print(last_match)
-    for player in players:
-        cur.execute('INSERT INTO matches (tournament_id, player, winner, match) VALUES (%s, %s, %s, %s);',
-                    (tournament_id, player, players[player], last_match))
-    conn.commit()
-    conn.close()
+    with get_cursor() as cur:
+        tournament_id = get_tournament(tournament)
+        cur.execute('SELECT COALESCE(max(match),0) AS last_match FROM matches WHERE tournament_id = %s;',
+                    (tournament_id,))
+        last_match = cur.fetchone()[0]
+        last_match += 1
+        # print(last_match)
+        for player in players:
+            cur.execute('INSERT INTO matches (tournament_id, player, winner, match) VALUES (%s, %s, %s, %s);',
+                        (tournament_id, player, players[player], last_match))
 
 
 def _generate_players_games_played(standings, matches):
@@ -303,9 +288,6 @@ def _generate_players_games_played(standings, matches):
         players.add(player_stats[0])
         plays[player_stats[0]] = set()
 
-    game = 1  # Starting game
-    current_game = []
-
     # create a graph of players who played to create a graph of players who have not played
     # create a graph of players who played to create a graph of players who have not played
     for match in matches:
@@ -324,16 +306,14 @@ def _generate_match_history(tournament):
         Sample return: [('2,5',..), ('4,6',), ('1,3',)] where
             where each tuple returns everyone that played during the specific match
     """
-    conn = connect()
-    cur = conn.cursor()
-    t_id = get_tournament(tournament)
-    cur.execute('''SELECT array_to_string(array_agg(DISTINCT player),',') AS players_in_game
-                       FROM matches
-                       WHERE tournament_id = (%s)
-                       GROUP BY matches.match;''', (t_id,))
-    matches = cur.fetchall()
-    conn.close()
-    return matches
+    with get_cursor() as cur:
+        t_id = get_tournament(tournament)
+        cur.execute('''SELECT array_to_string(array_agg(DISTINCT player),',') AS players_in_game
+                           FROM matches
+                           WHERE tournament_id = (%s)
+                           GROUP BY matches.match;''', (t_id,))
+        matches = cur.fetchall()
+        return matches
 
 
 def swiss_pairings(tournament='default'):
