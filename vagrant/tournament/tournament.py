@@ -3,7 +3,6 @@
     Postgresql/Python swiss tournament tracker
 """
 
-import bleach
 import networkx as nx
 import psycopg2
 
@@ -155,7 +154,7 @@ def register_player(name, tournament='default'):
     """
     conn = connect()
     cur = conn.cursor()
-    cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (bleach.clean(name),))
+    cur.execute('INSERT INTO players VALUES (%s) RETURNING id;', (name,))
     player_id = cur.fetchone()[0]
     tournament_id = get_tournament(tournament)
     # Check if tournament exists
