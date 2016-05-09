@@ -2,7 +2,7 @@
 ### Tournament Tracker
 Multi-tournament swiss-pairing tracker build on python.
 # Table of Contents
----
+
     *   [Quick Start](#quick-start)
     *   Developers 
     *   Versions
@@ -24,6 +24,21 @@ python sample_run.py
 
 ### What's included
 
+```
+pyTournamentTracker/
+├──vagrant/
+|   ├── tournament/
+|   |   ├── __init__.py
+|   |   ├── Makefile
+|   |   ├── requirements.txt
+|   |   ├── sample_run.py
+|   |   ├── test_basic.py
+|   |   ├── tournament.py
+|   |   ├── tournament.sql
+|   ├── postgresql_provisions.sh
+|   ├── provision.sh
+|   ├── python_provisions.sh
+```
 
 #### Source Folder
 
