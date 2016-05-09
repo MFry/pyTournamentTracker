@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# 
-# tournament.py -- implementation of a Swiss-system tournament
-#
+"""
+    Postgresql/Python swiss tournament tracker
+"""
 
 import bleach
 import networkx as nx
