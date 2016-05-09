@@ -2,6 +2,9 @@
 -- Table definitions for the tournament project.
 --
 
+-- If you want to clear the database uncomment the line below
+-- DROP DATABASE IF EXISTS tournament;
+CREATE DATABASE IF NOT EXISTS tournament;
 
 CREATE TABLE players (
   name TEXT               NOT NULL,

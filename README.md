@@ -1,19 +1,28 @@
 # pyTournamentTracker
 ### Tournament Tracker
 Multi-tournament swiss-pairing tracker build on python.
-## Usage
+# Table of Contents
+---
+    *   [Quick Start](#quick-start)
+    *   Developers 
+    *   Versions
+    
+### Dependencies
+
 ### First Time Start
 ```
 vagrant up
 vagrant ssh  
 ```
-Once you are logged into the vm
+<a name="quick-start"></a>Once you are logged into the vm
 ``` bash
 source /vagrant/tournament/virtualenv/bin/activate
 cd /vagrant/tournamnet/
 make -f Makefile
 python sample_run.py    
 ```
+
+### What's included
 
 
 #### Source Folder
@@ -43,3 +52,8 @@ python test_basic.py
 ```bash
 python sample_run.py
 ```
+
+## Versions
+The provided vagrant VM takes care of all the project dependencies such as:
+*   Python 3.5+
+*   PostgreSQL 9.5
