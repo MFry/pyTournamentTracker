@@ -99,15 +99,20 @@ def count_players():
     return int(player_count[0])
 
 
-def count_registered_players():
+def count_registered_players(tournament=None):
     """
 
+    :param tournament: The tournament for which you want to count the registered players
     :return: Returns the number of players currently registered in tournaments.
         :rtype: int
     """
     conn = connect()
     cur = conn.cursor()
-    cur.execute('SELECT sum(total_players) FROM view_tournament_size;')
+    if tournament:
+        t_id = get_tournament(tournament)
+        cur.execute('SELECT sum(total_players) FROM view_tournament_size WHERE tournament_id = %s;', (str(t_id),))
+    else:
+        cur.execute('SELECT sum(total_players) FROM view_tournament_size;')
     tournaments_player_count = cur.fetchone()
     if not tournaments_player_count[0]:
         return 0
@@ -164,7 +169,20 @@ def register_player(name, tournament='default'):
 
 
 def register_player_to_tournament(player_id, tournament='default'):
-    pass
+    """
+        Register an existing player into a new tournament
+    :param player_id: SERIAL id of an existent player
+    :type player_id: int
+    :param tournament: SERIAL id of an existent tournament
+    :type tournament: str
+    :return:
+    """
+    conn = connect()
+    cur = conn.cursor()
+    tournament_id = get_tournament(tournament)
+    cur.execute('INSERT INTO tournament_players VALUES (%s, %s);', (str(player_id), str(tournament_id)))
+    conn.commit()
+    conn.close()
 
 
 def get_tournament(tournament):

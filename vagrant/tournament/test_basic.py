@@ -63,6 +63,20 @@ class TestTournament(unittest.TestCase):
         c2 = count_players()
         self.assertFalse(c != 1, 'count_registered_players should return 1 from across default tournament')
         self.assertFalse(c2 != 5, 'count_players should return 5 got instead {}'.format(c2))
+        p_id = get_player('terminator')
+        register_player_to_tournament(p_id)
+        p_id = get_player('not lonely')
+        register_player_to_tournament(p_id)
+        c = count_registered_players()
+        self.assertFalse(c != 3,
+                         'Two existing players should be registered to the default tournament, got: {}'.format(c))
+        c_def = count_registered_players('default')
+        self.assertFalse(c != c_def, 'Tournament default should be the only tournament with registered players')
+        register_player('Mad Max', 'Crazy Wasteland')
+        c_new = count_registered_players('Crazy Wasteland')
+        self.assertFalse(c_new > c,
+                         '"Crazy Wasteland" should have 1 registered player has {} "default" should have 3 registered players has {}'.format(
+                             c_new, c_def))
 
     def test_get_tournament_and_player_id(self):
         """
