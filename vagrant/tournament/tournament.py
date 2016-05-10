@@ -7,6 +7,7 @@ import networkx as nx
 import psycopg2
 from contextlib import contextmanager
 
+
 def connect():
     """
         Establishes a connection to the tournament database
@@ -47,7 +48,6 @@ def delete_matches(tournament=None):
             cur.execute('DELETE FROM matches WHERE t_id = (%s);', (tournament_id,))
         else:
             cur.execute('DELETE FROM matches;')
-
 
 
 def delete_players():
