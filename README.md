@@ -5,6 +5,7 @@ Multi-tournament swiss-pairing tracker build on python.
 
 *   [Quick Start](#quick-start)
 *   [Developer References](#references)
+    *   [Create Database](#database)
     *   [Run Tests](#run-test)
 *   [Versions](#versions)
 *   [Creators](#creators)
@@ -50,10 +51,10 @@ pyTournamentTracker/
 cd /vagrant/tournament/
 ```
 
-#### Database used
+#### Database
 
 ``` bash
-\c tournament
+psql -f /vagrant/tournament/tournament.sql
 ```
 
 #### Activate Virtual Environment
