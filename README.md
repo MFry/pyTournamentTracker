@@ -1,6 +1,5 @@
-# pyTournamentTracker
-### Tournament Tracker
-Multi-tournament swiss-pairing tracker build on python.
+# Tournament Tracker
+Multi-tournament swiss-pairing tracker build on Python/PostgreSQL.
 # Table of Contents
 
 *   [Quick Start](#quick-start)
