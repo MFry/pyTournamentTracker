@@ -81,6 +81,7 @@ python sample_run.py
 ## Versions
 The provided vagrant VM takes care of all the project dependencies such as:
 *   [Python 3.5+](https://docs.python.org/3/whatsnew/3.5.html)
+  * [NetworkX](http://networkx.github.io/)
 *   [PostgreSQL 9.5](https://wiki.postgresql.org/wiki/What's_new_in_PostgreSQL_9.5)
 
 ## Creators
